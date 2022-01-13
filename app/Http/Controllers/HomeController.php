@@ -33,4 +33,22 @@ class HomeController extends Controller
 
         return $data;
     }
+
+    public function client(Request $request){
+        $data = $this->homeService->getClient($request->all());
+
+        return $data;
+    }
+
+    public function city(Request $request){
+        $data = $this->homeService->getCity($request->all());
+
+        return $data;
+    }
+
+    public function state(Request $request){
+        $data = $this->homeService->getState($request->all());
+
+        return $data;
+    }
 }

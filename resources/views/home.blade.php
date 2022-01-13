@@ -26,13 +26,57 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-12">
+                <div class="col-12 col-lg-6">
                     <div class="card">
                         <div class="card-header">
                             <h4>Bookings</h4> <!-- .card-title -->
                         </div>
                         <div class="card-body">
                             <table id="bookingTable" class="table table-bordered table-striped">
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Top Treks</h4> <!-- .card-title -->
+                        </div>
+                        <div class="card-body">
+                            <table id="topTreksTable" class="table table-bordered table-striped">
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Clients</h4> <!-- .card-title -->
+                        </div>
+                        <div class="card-body">
+                            <table id="clientsTable" class="table table-bordered table-striped">
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Cities</h4> <!-- .card-title -->
+                        </div>
+                        <div class="card-body">
+                            <table id="cityTable" class="table table-bordered table-striped">
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>States</h4> <!-- .card-title -->
+                        </div>
+                        <div class="card-body">
+                            <table id="stateTable" class="table table-bordered table-striped">
                             </table>
                         </div>
                     </div>

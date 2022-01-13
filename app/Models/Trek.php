@@ -26,31 +26,17 @@ class Trek extends Model
     
     public function getPercentAttribute()
     {
-        $increase = $this->bookings_count - $this->bookings_count_past;
-        if($this->bookings_count == 0 && $this->bookings_count_past == 0){
-            $percent = 0;
-        } elseif($this->bookings_count_past == 0){
-            $percent = 100;
-        }else{
-            $percent = ($increase/$this->bookings_count_past)*100;
-        }
-        
-        return number_format( (float)$percent, 2, '.', '' ) + 0;
+        return get_percentage_change($this->bookings_count,$this->bookings_count_past);
     }
 
     public function getPercentPaidAttribute()
     {
         if($this->PaymentID){
-            $increase = $this->bookings_count - $this->bookings_count_past;
-            if($this->bookings_count_past == 0){
-                $percent = 100;
-            }else{
-                $percent = ($increase/$this->bookings_count_past)*100;
-            }
+            $percent = get_percentage_change($this->bookings_paid_count,$this->bookings_paid_count_past);
         }else{
             $percent = 0;
         }
         
-        return number_format( (float)$percent, 2, '.', '' ) + 0;
+        return $percent;
     }
 }

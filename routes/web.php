@@ -16,5 +16,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::post('/getBookings', [App\Http\Controllers\HomeController::class, 'booking']);
+Route::post('/getClients', [App\Http\Controllers\HomeController::class, 'client']);
+Route::post('/getCities', [App\Http\Controllers\HomeController::class, 'city']);
+Route::post('/getStates', [App\Http\Controllers\HomeController::class, 'state']);
 
 Auth::routes();
