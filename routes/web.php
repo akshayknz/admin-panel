@@ -19,5 +19,7 @@ Route::post('/getBookings', [App\Http\Controllers\HomeController::class, 'bookin
 Route::post('/getClients', [App\Http\Controllers\HomeController::class, 'client']);
 Route::post('/getCities', [App\Http\Controllers\HomeController::class, 'city']);
 Route::post('/getStates', [App\Http\Controllers\HomeController::class, 'state']);
+Route::post('/getAges', [App\Http\Controllers\HomeController::class, 'age']);
+Route::post('/getRevenue', [App\Http\Controllers\HomeController::class, 'revenue']);
 
 Auth::routes();

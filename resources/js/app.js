@@ -35,6 +35,8 @@ $(function () {
         $("#clientsTable").DataTable().ajax.reload()
         $("#cityTable").DataTable().ajax.reload()
         $("#stateTable").DataTable().ajax.reload()
+        $("#ageTable").DataTable().ajax.reload()
+        $("#revenueTable").DataTable().ajax.reload()
     });
 
     /**
@@ -137,14 +139,14 @@ $(function () {
             }
         },
         {
-            "title": "Booking",
+            "title": "Top Treks",
             "width": "60%",
             "render": function (data, type, content, meta) {
                 return content.trek_name;
             }
         },
         {
-            "title": "New booking",
+            "title": "No. Booking",
             "render": function (data, type, content, meta) {
                 return `${content.bookings_count}`
             }
@@ -255,7 +257,7 @@ $(function () {
             }
         },
         {
-            "title": "",
+            "title": "Realtime",
             "render": function (data, type, content, meta) {
                 return `${content[1]} (${content[2]}%)`;
             }
@@ -307,13 +309,126 @@ $(function () {
             }
         },
         {
-            "title": "",
+            "title": "Realtime",
             "render": function (data, type, content, meta) {
                 return `${content[1]} (${content[2]}%)`;
             }
         }
         ]
     }).buttons().container().appendTo('#stateTable_wrapper .col-md-6:eq(0)');
+
+    let ageTable = $("#ageTable").DataTable({
+        "responsive": true,
+        "lengthChange": false,
+        "autoWidth": false,
+        "buttons": [
+            { extend: 'copy', className: 'btn btn-secondary ' },
+            { extend: 'csv', className: 'btn btn-secondary ' },
+            { extend: 'excel', className: 'btn btn-secondary ' },
+            { extend: 'pdf', className: 'btn btn-secondary ' },
+            { extend: 'print', className: 'btn btn-secondary ' },
+            { extend: 'colvis', className: 'btn btn-secondary ' }
+        ],
+        "ajax": {
+            "url": "getAges",
+            "dataSrc": "",
+            "type" : "POST",
+            "data": function ( d ) {
+               return  $.extend(d, bookingData);
+            }
+        },
+        'fnCreatedRow': function (nRow, aData, iDataIndex) {
+            $(nRow).attr('id', 'booking-' + aData.id);
+        },
+        columnDefs: [{
+            "defaultContent": "-",
+            "targets": "_all"
+          }],
+        "columns": [
+        {
+            "title": "Sl. No.",
+            sortable: false,
+            "width": "10%",
+            "render": function (data, type, row, meta) {
+                return meta.row + 1;
+            }
+        },
+        {
+            "title": "Age Range",
+            "width": "60%",
+            "render": function (data, type, content, meta) {
+                console.log(content);
+                return content[0];
+            }
+        },
+        {
+            "title": "Realtime",
+            "render": function (data, type, content, meta) {
+                return `${content[1]} (${content[2]}%)`;
+            }
+        }
+        ]
+    }).buttons().container().appendTo('#ageTable_wrapper .col-md-6:eq(0)');
+
+    let revenueTable = $("#revenueTable").DataTable({
+        "responsive": true,
+        "lengthChange": false,
+        "autoWidth": false,
+        "buttons": [
+            { extend: 'copy', className: 'btn btn-secondary ' },
+            { extend: 'csv', className: 'btn btn-secondary ' },
+            { extend: 'excel', className: 'btn btn-secondary ' },
+            { extend: 'pdf', className: 'btn btn-secondary ' },
+            { extend: 'print', className: 'btn btn-secondary ' },
+            { extend: 'colvis', className: 'btn btn-secondary ' }
+        ],
+        "ajax": {
+            "url": "getRevenue",
+            "dataSrc": "",
+            "type" : "POST",
+            "data": function ( d ) {
+               return  $.extend(d, bookingData);
+            }
+        },
+        'fnCreatedRow': function (nRow, aData, iDataIndex) {
+            $(nRow).attr('id', 'booking-' + aData.id);
+        },
+        columnDefs: [{
+            "defaultContent": "-",
+            "targets": "_all"
+          }],
+        "columns": [
+        {
+            "title": "Sl. No.",
+            sortable: false,
+            "width": "10%",
+            "render": function (data, type, row, meta) {
+                return meta.row + 1;
+            }
+        },
+        {
+            "title": "Revenue",
+            "width": "60%",
+            "render": function (data, type, content, meta) {
+                return content.trek_name;
+            }
+        },
+        {
+            "title": "No. trekkers",
+            "width": "60%",
+            "render": function (data, type, content, meta) {
+                return content.total_participants;
+            }
+        },
+        {
+            "title": "Amount",
+            "width": "60%",
+            "render": function (data, type, content, meta) {
+                return content.paid_sum;
+            }
+        }
+        ]
+    }).buttons().container().appendTo('#ageTable_wrapper .col-md-6:eq(0)');
     
     // $("#bookingTable").DataTable({
     //     "responsive": true,

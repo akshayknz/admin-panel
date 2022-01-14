@@ -15,3 +15,7 @@ if (! function_exists('get_percentage_change')) {
         return number_format( (float)$percent, 2, '.', '' ) + 0;
     }
 }
+
+// "files": [
+//     "app/helpers.php"
+// ],

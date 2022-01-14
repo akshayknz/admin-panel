@@ -1,5 +1,0 @@
-resources/js/app.js
-app/Models/Trek.php
-app/Models/Booking.php
-config/database.php
-resources/views/layouts/app.blade.php

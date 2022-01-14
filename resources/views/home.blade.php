@@ -81,6 +81,28 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-12 col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Age</h4> <!-- .card-title -->
+                        </div>
+                        <div class="card-body">
+                            <table id="ageTable" class="table table-bordered table-striped">
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Revenue</h4> <!-- .card-title -->
+                        </div>
+                        <div class="card-body">
+                            <table id="revenueTable" class="table table-bordered table-striped">
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

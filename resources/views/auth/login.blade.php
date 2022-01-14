@@ -18,7 +18,7 @@
 <body class="hold-transition login-page">
 <div class="login-box">
     <div class="login-logo">
-        <a href="{{ url('/home') }}"><b>{{ config('app.name') }}</b></a>
+        <a href="{{ url('/home') }}"><b>TTH - Admin Dashboard</b></a>
     </div>
     <!-- /.login-logo -->
 
@@ -79,7 +79,7 @@
                 <!-- <a href="{{ route('password.request') }}">I forgot my password</a> -->
             </p>
             <p class="mb-0">
-                <a href="{{ route('register') }}" class="text-center">Register a new membership</a>
+                <!-- <a href="{{ route('register') }}" class="text-center">Register a new membership</a> -->
             </p>
         </div>
         <!-- /.login-card-body -->

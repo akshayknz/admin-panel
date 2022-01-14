@@ -51,4 +51,23 @@ class HomeController extends Controller
 
         return $data;
     }
+
+    public function age(Request $request){
+        $data = $this->homeService->getAge($request->all());
+
+        return $data;
+    }
+
+    public function revenue(Request $request){
+        $data = $this->homeService->getRevenue($request->all());
+
+        return $data;
+    }
 }
+
+/**
+ * repeat row in clients
+ * NEW
+ * revencue
+ * tth data
+ */
