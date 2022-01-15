@@ -21,5 +21,6 @@ Route::post('/getCities', [App\Http\Controllers\HomeController::class, 'city']);
 Route::post('/getStates', [App\Http\Controllers\HomeController::class, 'state']);
 Route::post('/getAges', [App\Http\Controllers\HomeController::class, 'age']);
 Route::post('/getRevenue', [App\Http\Controllers\HomeController::class, 'revenue']);
+Route::post('/getTthdata', [App\Http\Controllers\HomeController::class, 'tthdata']);
 
 Auth::routes();

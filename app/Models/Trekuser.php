@@ -4,14 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Booking;
+use App\Models\Trekker;
+use App\Models\Departure;
 
 class Trekuser extends Model
 {
     use HasFactory;
     protected $table = 'wp_trektable_userdetails';
     protected $connection = 'mysql_wp';
-    protected $appends = ['age'];
+    protected $appends = ['age', 'name'];
     
     public function getAgeAttribute()
     {
@@ -23,5 +24,15 @@ class Trekuser extends Model
         }
 
         return $diff;
+    }
+    
+    public function treks()
+    {
+        return $this->hasMany(Trekker::class, 'trek_uid', 'trek_user_email');
+    }
+
+    public function getNameAttribute()
+    {
+        return $this->trek_user_first_name. ' ' .$this->trek_user_last_name;
     }
 }

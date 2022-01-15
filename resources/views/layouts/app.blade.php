@@ -17,8 +17,9 @@
 
     @stack('page_css')
 </head>
-
-<body class="hold-transition sidebar-mini layout-fixed">
+<style>
+</style>
+<body class="hold-transition sidebar-mini layout-fixed skin-red">
 <div class="wrapper">
     <!-- Main Header -->
     <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -84,7 +85,9 @@
 </div>
 
 <script src="{{ mix('js/app.js') }}" defer></script>
-
+ 
+ 
+<script type="text/javascript" src="https://cdn.datatables.net/rowgroup/1.1.4/js/dataTables.rowGroup.js" defer></script>
 @yield('third_party_scripts')
 
 @stack('page_scripts')

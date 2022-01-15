@@ -103,10 +103,20 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-12 col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>TTH Data</h4> <!-- .card-title -->
+                        </div>
+                        <div class="card-body">
+                            <table id="tthdataTable" class="table table-bordered table-striped">
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
-
     <script>
     </script>
     @endsection

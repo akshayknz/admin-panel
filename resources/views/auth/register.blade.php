@@ -15,7 +15,7 @@
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
 
 </head>
-<body class="hold-transition register-page">
+<body class="hold-transition register-page skin-red">
 <div class="register-box">
     <div class="register-logo">
         <a href="{{ url('/home') }}"><b>{{ config('app.name') }}</b></a>

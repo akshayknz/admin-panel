@@ -63,11 +63,16 @@ class HomeController extends Controller
 
         return $data;
     }
+
+    public function tthdata(Request $request){
+        $data = $this->homeService->getTthdata($request->all());
+
+        return $data;
+    }
 }
 
 /**
- * repeat row in clients
- * NEW
- * revencue
  * tth data
+ * Trekuser hasMany Bookings (/ Trekkers list?) orderBy userid
+ * change revenue from booking to trekkers list
  */

@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\Trek;
 use App\Models\Trekuser;
+use App\Models\Trekker;
+use App\Models\Departure;
 use DateTime;
 use DB;
 use Illuminate\Support\Carbon;
@@ -70,31 +72,95 @@ class HomeService
             (new DateTime($date[0]->format('Y-m-d H:i:s')))->modify('-30 days'),
             $date[0],
         ];
-        $totalCount = Trekuser::whereDate('trek_user_updated_time', '>=', $date[0])
-            ->whereDate('trek_user_updated_time', '<', $date[1])->count();
-        $maleCount = Trekuser::where('trek_user_gender', 'Male')->whereDate('trek_user_updated_time', '>=', $date[0])
-            ->whereDate('trek_user_updated_time', '<', $date[1])->count();
-        $femaleCount = Trekuser::where('trek_user_gender', 'Female')->whereDate('trek_user_updated_time', '>=', $date[0])
-            ->whereDate('trek_user_updated_time', '<', $date[1])->count();
-        $otherCount = Trekuser::where('trek_user_gender', 'Other')->whereDate('trek_user_updated_time', '>=', $date[0])
-            ->whereDate('trek_user_updated_time', '<', $date[1])->count();
-        $newCount = Trekuser::whereDate('trek_user_updated_time', '>=', $date[0])
-            ->whereDate('trek_user_updated_time', '<', $date[1])
-            ->count();
-        $totalCount_past = Trekuser::whereDate('trek_user_updated_time', '>=', $pastDate[0])
-            ->whereDate('trek_user_updated_time', '<', $pastDate[1])->count();
-        $maleCount_past = Trekuser::where('trek_user_gender', 'Male')->whereDate('trek_user_updated_time', '>=', $pastDate[0])
-            ->whereDate('trek_user_updated_time', '<', $pastDate[1])->count();
-        $femaleCount_past = Trekuser::where('trek_user_gender', 'Female')->whereDate('trek_user_updated_time', '>=', $pastDate[0])
-            ->whereDate('trek_user_updated_time', '<', $pastDate[1])->count();
-        $otherCount_past = Trekuser::where('trek_user_gender', 'Other')->whereDate('trek_user_updated_time', '>=', $pastDate[0])
-            ->whereDate('trek_user_updated_time', '<', $pastDate[1])->count();
-        $newCount_past = Trekuser::whereDate('trek_user_updated_time', '>=', $date[0])
-            ->whereDate('trek_user_updated_time', '<', $date[1])
-            ->count();
+        $arr = ["Male", "Female", "Other", "New", "Repeat"];
+        //total
+        $totalCount = Trekker::whereDate('trek_trekker_updated_time', '>=', $date[0])
+        ->whereDate('trek_trekker_updated_time', '<', $date[1])->count();
+        $totalCount_past = Trekker::whereDate('trek_trekker_updated_time', '>=', $pastDate[0])
+        ->whereDate('trek_trekker_updated_time', '<', $pastDate[1])->count();
+        //Male
+        $maleCount = Trekker::where('trek_tgender', 'Male')
+        ->whereDate('trek_trekker_updated_time', '>=', $date[0])
+        ->whereDate('trek_trekker_updated_time', '<', $date[1])->count();
+        $maleCount_past = Trekker::where('trek_tgender', 'Male')
+        ->whereDate('trek_trekker_updated_time', '>=', $pastDate[0])
+        ->whereDate('trek_trekker_updated_time', '<', $pastDate[1])->count();
+        //Female
+        $femaleCount = Trekker::where('trek_tgender', 'Female')
+        ->whereDate('trek_trekker_updated_time', '>=', $date[0])
+        ->whereDate('trek_trekker_updated_time', '<', $date[1])->count();
+        $femaleCount_past = Trekker::where('trek_tgender', 'Female')
+        ->whereDate('trek_trekker_updated_time', '>=', $pastDate[0])
+        ->whereDate('trek_trekker_updated_time', '<', $pastDate[1])->count();
+        //Other
+        $otherCount = Trekker::where('trek_tgender', 'Other')
+        ->whereDate('trek_trekker_updated_time', '>=', $date[0])
+        ->whereDate('trek_trekker_updated_time', '<', $date[1])->count();
+        $otherCount_past = Trekker::where('trek_tgender', 'Other')
+        ->whereDate('trek_trekker_updated_time', '>=', $pastDate[0])
+        ->whereDate('trek_trekker_updated_time', '<', $pastDate[1])->count();
+        //New & Repeat
+        $repeatCount = Trekker::select('trek_uid')
+        ->whereDate('trek_trekker_updated_time', '>=', $date[0])
+        ->whereDate('trek_trekker_updated_time', '<', $date[1])
+        ->groupBy('trek_selected_trek')
+        ->groupBy('trek_uid')
+        ->get()->toArray();
+        $repeatCount_past = Trekker::select('trek_uid')
+        ->whereDate('trek_trekker_updated_time', '<', $date[0])
+        ->groupBy('trek_uid')
+        ->groupBy('trek_selected_trek')
+        ->get()->toArray();
+        $repeatCount = array_map(function ($v) {return $v['trek_uid'];}, $repeatCount);
+        $repeatCount_past = array_map(function ($v) {return $v['trek_uid'];}, $repeatCount_past);
+        $repeatCount = array_map(function ($v) use($repeatCount_past) {return in_array($v,$repeatCount_past);}, $repeatCount);
+        $repeatCount = array_count_values(
+            array_map('intval', $repeatCount)
+        );
+        // $newCount = $repeatCount[0];
+        // $repeatCount = $repeatCount[1];
+        if(isset($repeatCount[0])){
+            $newCount = $repeatCount[0];
+        }else{
+            $newCount = 0;
+        }
+        if(isset($repeatCount[1])){
+            $repeatCount = $repeatCount[1];
+        }else{
+            $repeatCount = 0;
+        }
+        //New & Repeat Past
+        $repeatCount2 = Trekker::select('trek_uid')
+        ->whereDate('trek_trekker_updated_time', '>=', $pastDate[0])
+        ->whereDate('trek_trekker_updated_time', '<', $pastDate[1])
+        ->groupBy('trek_selected_trek')
+        ->groupBy('trek_uid')
+        ->get()->toArray();
+        $repeatCount_past = Trekker::select('trek_uid')
+        ->whereDate('trek_trekker_updated_time', '<', $pastDate[0])
+        ->groupBy('trek_uid')
+        ->groupBy('trek_selected_trek')
+        ->get()->toArray();
+        $repeatCount2 = array_map(function ($v) {return $v['trek_uid'];}, $repeatCount2);
+        $repeatCount_past = array_map(function ($v) {return $v['trek_uid'];}, $repeatCount_past);
+        $repeatCount2 = array_map(function ($v) use($repeatCount_past) {return in_array($v,$repeatCount_past);}, $repeatCount2);
+        $repeatCount2 = array_count_values(
+            array_map('intval', $repeatCount2)
+        );
+        if(isset($repeatCount2[0])){
+            $newCount_past = $repeatCount2[0];
+        }else{
+            $newCount_past = 0;
+        }
+        if(isset($repeatCount2[1])){
+            $repeatCount_past = $repeatCount2[1];
+        }else{
+            $repeatCount_past = 0;
+        }
         $data = [
             ['Total' => $totalCount, "past" => get_percentage_change($totalCount, $totalCount_past)],
             ['New' => $newCount, "past" => get_percentage_change($newCount, $newCount_past)],
+            ['Repeat' => $repeatCount, "past" => get_percentage_change($repeatCount, $repeatCount_past)],
             ['Male' => $maleCount, "past" => get_percentage_change($maleCount, $maleCount_past)],
             ['Female' => $femaleCount, "past" => get_percentage_change($femaleCount, $femaleCount_past)],
             ['Other' => $otherCount, "past" => get_percentage_change($otherCount, $otherCount_past)],
@@ -367,9 +433,44 @@ class HomeService
                     ->whereDate('trek_booking_updated_time', '>=', $date[0])
                     ->whereDate('trek_booking_updated_time', '<', $date[1]);
             }])
-            ->orderBy('total_participants', 'desc')->get()->toArray();
+            ->orderBy('total_participants', 'desc')->get();
         
         return $data;
     }
 
+    public function getTthdata($data)
+    {
+        $date = array_map(function ($data) {
+            return new DateTime(($data));
+        }, explode(' - ', $data['date']));
+
+        $users = Trekuser::with('treks.departure')
+            ->orderBy('trek_user_first_name', 'asc')
+            ->get()->toArray();
+
+        $data = [];
+
+        foreach ($users as $k => $user) {
+            $temp = [
+                "name" => $user['name'],
+                "gender" => $user['trek_user_gender'],
+                "dob" => $user['trek_user_dob'],
+                "email" => $user['trek_user_email'],
+                "phone" => $user['trek_user_contact_number'],
+                "state" => $user['trek_user_state'],
+                "city" => $user['trek_user_city'],
+                "country" => $user['trek_user_country']
+            ];
+            foreach ($user['treks'] as $ki => $trek) {
+                $trekQuery = Trek::where('id',$trek['trek_selected_trek'])->first()->toArray();
+                $temp['trek_name'] = $trekQuery['trek_name']; 
+                $temp['trek_id'] = $trekQuery['id']; 
+                $temp['trek_status'] = Carbon::now()->startOfDay()->gte($trek['departure'][0]['trek_start_date']); 
+                $temp['date'] = $trek['departure'][0]['trek_start_date']; 
+            }
+            $data[] = $temp;
+        }
+
+        return $data;
+    }
 }

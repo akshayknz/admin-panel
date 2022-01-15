@@ -15,7 +15,7 @@
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
 
 </head>
-<body class="hold-transition login-page">
+<body class="hold-transition login-page skin-red">
 <div class="login-box">
     <div class="login-logo">
         <a href="{{ url('/home') }}"><b>TTH - Admin Dashboard</b></a>
