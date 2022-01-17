@@ -69,10 +69,18 @@ class HomeController extends Controller
 
         return $data;
     }
+
+    public function test(Request $request){
+        $data = $this->homeService->getTest($request->all());
+
+        return $data;
+    }
 }
 
 /**
- * tth data
- * Trekuser hasMany Bookings (/ Trekkers list?) orderBy userid
+ * "files": [
+ *      "app/helpers.php"
+ *   ],
+ * 
  * change revenue from booking to trekkers list
  */

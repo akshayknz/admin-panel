@@ -2,12 +2,14 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use App\Models\Trek;
 use App\Models\Trekuser;
 use App\Models\Trekker;
 use App\Models\Departure;
 use DateTime;
 use DB;
+use Auth;
 use Illuminate\Support\Carbon;
 
 class HomeService
@@ -472,5 +474,11 @@ class HomeService
         }
 
         return $data;
+    }
+
+    public function getTest()
+    {
+        $data = Auth::user()->getRoleNames();   
+        dd($data);
     }
 }

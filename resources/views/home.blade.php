@@ -26,6 +26,7 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
+                @can('view bookings')
                 <div class="col-12 col-lg-6">
                     <div class="card">
                         <div class="card-header">
@@ -37,6 +38,8 @@
                         </div>
                     </div>
                 </div>
+                @endcan
+                @can('view top treks')
                 <div class="col-12 col-lg-6">
                     <div class="card">
                         <div class="card-header">
@@ -48,6 +51,8 @@
                         </div>
                     </div>
                 </div>
+                @endcan
+                @can('view clients')
                 <div class="col-12 col-lg-6">
                     <div class="card">
                         <div class="card-header">
@@ -59,6 +64,8 @@
                         </div>
                     </div>
                 </div>
+                @endcan
+                @can('view cities')
                 <div class="col-12 col-lg-6">
                     <div class="card">
                         <div class="card-header">
@@ -70,6 +77,8 @@
                         </div>
                     </div>
                 </div>
+                @endcan
+                @can('view states')
                 <div class="col-12 col-lg-6">
                     <div class="card">
                         <div class="card-header">
@@ -81,6 +90,8 @@
                         </div>
                     </div>
                 </div>
+                @endcan
+                @can('view age')
                 <div class="col-12 col-lg-6">
                     <div class="card">
                         <div class="card-header">
@@ -92,6 +103,8 @@
                         </div>
                     </div>
                 </div>
+                @endcan
+                @can('view revenue')
                 <div class="col-12 col-lg-6">
                     <div class="card">
                         <div class="card-header">
@@ -103,6 +116,8 @@
                         </div>
                     </div>
                 </div>
+                @endcan
+                @can('view tth data')
                 <div class="col-12 col-lg-12">
                     <div class="card">
                         <div class="card-header">
@@ -114,6 +129,7 @@
                         </div>
                     </div>
                 </div>
+                @endcan
             </div>
         </div>
     </section>
