@@ -16,7 +16,7 @@ class RoleController extends Controller
     public function __construct(RoleService $roleService)
     {
         $this->middleware('auth');
-        // $this -> middleware('permission:role management')->except(['list']);
+        $this -> middleware('permission:role management')->except(['list']);
         $this->roleService = $roleService;
     }
 

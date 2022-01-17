@@ -36,8 +36,9 @@ class PermissionsSeeder extends Seeder
         // or may be done by chaining
         $role = Role::firstOrCreate(['name' => 'staff'])
             ->givePermissionTo([
-                'view bookings', 
-                'view top treks'
+                'view bookings', 'view top treks',
+                'view clients','view states',
+                'view age','view revenue','view tth data'
             ]);
 
         $role = Role::firstOrCreate(['name' => 'super-admin']);

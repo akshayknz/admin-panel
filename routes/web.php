@@ -15,8 +15,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/users', [App\Http\Controllers\UserController::class, 'index'])->name('users');
-Route::get('/roles', [App\Http\Controllers\RoleController::class, 'index'])->name('roles');
 Route::post('/getBookings', [App\Http\Controllers\HomeController::class, 'booking']);
 Route::post('/getClients', [App\Http\Controllers\HomeController::class, 'client']);
 Route::post('/getCities', [App\Http\Controllers\HomeController::class, 'city']);
@@ -24,17 +22,22 @@ Route::post('/getStates', [App\Http\Controllers\HomeController::class, 'state'])
 Route::post('/getAges', [App\Http\Controllers\HomeController::class, 'age']);
 Route::post('/getRevenue', [App\Http\Controllers\HomeController::class, 'revenue']);
 Route::post('/getTthdata', [App\Http\Controllers\HomeController::class, 'tthdata']);
+
+Route::get('/users', [App\Http\Controllers\UserController::class, 'index'])->name('users');
 Route::get('/getUsers', [App\Http\Controllers\UserController::class, 'list']);
-Route::get('/editRole', [App\Http\Controllers\RoleController::class, 'edit']);
 Route::get('/editUsers', [App\Http\Controllers\UserController::class, 'edit']);
+Route::post('/updateUser', [App\Http\Controllers\UserController::class, 'update']);
+Route::post('/createUser', [App\Http\Controllers\UserController::class, 'create']);
+Route::delete('/deleteUser/{id}', [App\Http\Controllers\UserController::class, 'delete']);
+
+Route::get('/roles', [App\Http\Controllers\RoleController::class, 'index'])->name('roles');
 Route::get('/getRoles', [App\Http\Controllers\RoleController::class, 'list']);
 Route::get('/getPermissions', [App\Http\Controllers\RoleController::class, 'listPermissions']);
-Route::post('/updateUser', [App\Http\Controllers\UserController::class, 'update']);
+Route::get('/editRole', [App\Http\Controllers\RoleController::class, 'edit']);
 Route::post('/updateRole', [App\Http\Controllers\RoleController::class, 'update']);
-Route::post('/createUser', [App\Http\Controllers\UserController::class, 'create']);
 Route::post('/createRole', [App\Http\Controllers\RoleController::class, 'create']);
-Route::delete('/deleteUser/{id}', [App\Http\Controllers\UserController::class, 'delete']);
 Route::delete('/deleteRole/{id}', [App\Http\Controllers\RoleController::class, 'delete']);
+
 Route::get('/test', [App\Http\Controllers\HomeController::class, 'test']);
 
 Auth::routes();
