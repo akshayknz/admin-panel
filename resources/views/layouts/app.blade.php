@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>{{ config('app.name') }}</title>
     <meta name="csrf-token" content="{{ csrf_token() }}" />
+    <input id="base-url" type="hidden" name="base-url" value="@php echo $app->make('url')->to('/'); @endphp">
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
 
@@ -76,18 +77,12 @@
 
     <!-- Main Footer -->
     <footer class="main-footer">
-        <div class="float-right d-none d-sm-block">
-            <b>Version</b> 3.0.5
-        </div>
-        <strong>Copyright &copy; 2014-2020 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights
-        reserved.
+        <a target="_" href="http://trekthehimalayas.in/">Trek the Himalayas</a>
     </footer>
 </div>
 
 <script src="{{ mix('js/app.js') }}" defer></script>
- 
- 
-<script type="text/javascript" src="https://cdn.datatables.net/rowgroup/1.1.4/js/dataTables.rowGroup.js" defer></script>
+<script src="https://cdn.rawgit.com/ashl1/datatables-rowsgroup/fbd569b8768155c7a9a62568e66a64115887d7d0/dataTables.rowsGroup.js" defer></script>
 @yield('third_party_scripts')
 
 @stack('page_scripts')

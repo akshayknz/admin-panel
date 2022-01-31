@@ -7,7 +7,7 @@
 @import '~admin-lte/plugins/daterangepicker/daterangepicker.css';
 @import '~admin-lte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css';
 @import '~admin-lte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css';
-@import '~admin-lte/plugins/datatables-buttons/css/buttons.bootstrap4.min.css';
+// @import '~admin-lte/plugins/datatables-buttons/css/buttons.bootstrap4.min.css';
 @import '~admin-lte/plugins/select2/css/select2.min.css';
 // @import "~bootstrap/scss/bootstrap";
 
@@ -182,13 +182,44 @@
     background: #ee303821;
 
 }
-.skin-red .btn-primary, .skin-red .bg-primary{
+.skin-red .btn-primary{
     // background: #ee3038 !important;
     border-color: #ee3038;
     background-color: white !important;
     color: #ef3038;
     font-weight: bold;
 
+}
+.skin-red .bg-primary{
+    // background: #ee3038 !important;
+    border-color: #ee3038;
+    // background-color: white !important;
+    color: #ef3038;
+    font-weight: bold;
+
+}
+.login-box .invalid-feedback{
+    color: #fff;
+}
+.login-box .input-group:not(.has-validation) > .input-group-append:not(:last-child) > .input-group-text{
+    color: #fff;
+}
+#datatables_buttons_info {
+    position: fixed;
+    bottom: 3vh;
+    right: 1vw;
+    backdrop-filter:blur(10px);
+    font-size:20px;
+    padding:10px;
+    border:2px solid #00000091;
+    border-radius:5px;
+/*     box-shadow: 0 0 5px 3px #85858552; */
+}
+#datatables_buttons_info h2{
+    font-size:15px;
+}
+#datatables_buttons_info div{
+    font-size:14px;
 }
 /* #ee3038 */
 

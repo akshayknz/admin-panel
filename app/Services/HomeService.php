@@ -4,18 +4,25 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Models\Trek;
+use App\Models\Booking;
 use App\Models\Trekuser;
 use App\Models\Trekker;
+use App\Models\CookRating;
+use App\Models\LeaderRating;
+use App\Models\Leader;
 use App\Models\Departure;
 use DateTime;
 use DB;
 use Auth;
 use Illuminate\Support\Carbon;
 
+use function PHPUnit\Framework\isEmpty;
+
 class HomeService
 {
     public function getBooking($data)
     {
+        // $data = ['date' => '12/19/2021 - 01/18/2022'];
         $date = array_map(function ($data) {
             return new DateTime(($data));
         }, explode(' - ', $data['date']));
@@ -59,8 +66,26 @@ class HomeService
         //         ->whereDate('trek_booking_updated_time', '<', $pastDate[1]);
         // }])
             ->orderBy('bookings_count', 'desc')
-            ->get()->toArray();
-
+            ->get();
+        $total =  Booking::whereDate('trek_booking_updated_time', '>=', $date[0])
+                ->whereDate('trek_booking_updated_time', '<', $date[1])->count();
+        $total_paid =  Booking::where('PaymentID', '<>', '')
+                ->whereDate('trek_booking_updated_time', '>=', $date[0])
+                ->whereDate('trek_booking_updated_time', '<', $date[1])->count();
+        $total_past =  Booking::whereDate('trek_booking_updated_time', '>=', $pastDate[0])
+                ->whereDate('trek_booking_updated_time', '<', $pastDate[1])->count();
+        $total_paid_past =  Booking::where('PaymentID', '<>', '')
+                ->whereDate('trek_booking_updated_time', '>=', $pastDate[0])
+                ->whereDate('trek_booking_updated_time', '<', $pastDate[1])->count();
+        $data->prepend(collect([
+            "trek_name" => "Total",
+            "bookings_count" => $total,
+            "bookings_count_past" => $total_past,
+            "bookings_count_paid" => $total_paid,
+            "bookings_count_paid_past" => $total_paid_past,
+            "percent" => get_percentage_change($total,$total_past),
+            "percent_paid" => get_percentage_change($total_paid,$total_paid_past)
+        ]));
         return $data;
     }
 
@@ -343,6 +368,13 @@ class HomeService
                 return count($group);
             })
             ->sortKeys()->toArray();
+        $temp_arr = [];
+        array_map(function ($a, $b) use ($output, &$temp_arr) {
+            if(!in_array($a,array_keys($output))){
+                $temp_arr[$a] = 0;
+            }
+        }, array_keys($ranges), $ranges);
+        $output = array_merge($output,$temp_arr);
         $output_now = Trekuser::select('trek_user_dob as dob')
             ->whereDate('trek_user_updated_time', '>=', $date[0])
             ->whereDate('trek_user_updated_time', '<', $date[1])
@@ -365,6 +397,13 @@ class HomeService
                 return count($group);
             })
             ->sortKeys()->toArray();
+        $temp_arr = [];
+        array_map(function ($a, $b) use ($output_now, &$temp_arr) {
+            if(!in_array($a,array_keys($output_now))){
+                $temp_arr[$a] = 0;
+            }
+        }, array_keys($ranges), $ranges);
+        $output_now = array_merge($output_now,$temp_arr);
         $output_past = Trekuser::select('trek_user_dob as dob')
             ->whereDate('trek_user_updated_time', '>=', $pastDate[0])
             ->whereDate('trek_user_updated_time', '<', $pastDate[1])
@@ -387,6 +426,13 @@ class HomeService
                 return count($group);
             })
             ->sortKeys()->toArray();
+        $temp_arr = [];
+        array_map(function ($a, $b) use ($output_past, &$temp_arr) {
+            if(!in_array($a,array_keys($output_past))){
+                $temp_arr[$a] = 0;
+            }
+        }, array_keys($ranges), $ranges);
+        $output_past = array_merge($output_past,$temp_arr);
         foreach ($output as $key => $value) {
             if (array_key_exists($key, $output_now)) {
                 if (array_key_exists($key, $output_past)) {
@@ -414,6 +460,7 @@ class HomeService
                 }
             }
         }
+        ksort($output);
 
         return array_map(function ($k, $v) {return [$k, $v['value'], $v['percent']];}, array_keys($output), $output);
     }
@@ -446,34 +493,189 @@ class HomeService
             return new DateTime(($data));
         }, explode(' - ', $data['date']));
 
-        $users = Trekuser::with('treks.departure')
+        $users = Trekuser::with(['treks.departure' => function ($query) use($date) {
+                $query->whereDate('trek_start_date', '>=', $date[0])
+                ->whereDate('trek_start_date', '<', $date[1]);
+            }])
             ->orderBy('trek_user_first_name', 'asc')
             ->get()->toArray();
-
         $data = [];
-
+        $iter = 1;
         foreach ($users as $k => $user) {
-            $temp = [
-                "name" => $user['name'],
-                "gender" => $user['trek_user_gender'],
-                "dob" => $user['trek_user_dob'],
-                "email" => $user['trek_user_email'],
-                "phone" => $user['trek_user_contact_number'],
-                "state" => $user['trek_user_state'],
-                "city" => $user['trek_user_city'],
-                "country" => $user['trek_user_country']
-            ];
+            if(empty($user['treks'])) $temp = [];
             foreach ($user['treks'] as $ki => $trek) {
                 $trekQuery = Trek::where('id',$trek['trek_selected_trek'])->first()->toArray();
-                $temp['trek_name'] = $trekQuery['trek_name']; 
-                $temp['trek_id'] = $trekQuery['id']; 
-                $temp['trek_status'] = Carbon::now()->startOfDay()->gte($trek['departure'][0]['trek_start_date']); 
-                $temp['date'] = $trek['departure'][0]['trek_start_date']; 
+                $temp = [];
+                if(empty($trek['departure'])){
+                    $temp = [];
+                }else{
+                    $temp[] = $iter; $iter++;
+                    $temp[] = $user['name']; 
+                    $temp[] = $user['trek_user_gender']; 
+                    $temp[] = $trekQuery['trek_name']; 
+                    $temp[] = $trek['departure'][0]['trek_start_date']; 
+                    $temp[] = $trek['trek_selected_trek']; 
+                    $temp[] = (Carbon::now()->startOfDay()->gte($trek['departure'][0]['trek_start_date']))? "Completed":"Upcoming"; 
+                    $temp[] = $user['trek_user_dob']; 
+                    $temp[] = $user['trek_user_email']; 
+                    $temp[] = $user['trek_user_contact_number']; 
+                    $temp[] = $user['trek_user_state']; 
+                    $temp[] = $user['trek_user_city']; 
+                    $temp[] = $user['trek_user_country']; 
+                }
+                if(!empty($temp)) $data[] = $temp;
             }
-            $data[] = $temp;
         }
-
+        // dd($data);
         return $data;
+    }
+
+    public function getCook($data)
+    {
+        $data=["date"=>"01/01/2022 - 01/31/2022"];
+        $date = array_map(function ($data) {
+            return new DateTime(($data));
+        }, explode(' - ', $data['date']));
+
+        $data = CookRating::select('CookID')
+            ->with('cook:cook_name,id')
+            ->whereDate('AddedDate', '>=', $date[0])
+            ->whereDate('AddedDate', '<=', $date[1])
+            ->where('Status', 0)->groupBy('CookID')
+            ->selectRaw('sum(NoOfBatch) as batches, sum(NoOfDays) as days, avg(Value) as rating')
+            ->has('cook')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    "name" => ($item->cook? $item->cook->cook_name:null),
+                    "days" => $item->days,
+                    "batches" => $item->batches,
+                    "rating" => $item->rating + 0,
+                ];
+            });
+        dd($data);
+        // $data = Trek::select(['id','trek_name','trek_cook'])
+        //     ->with('cook')->with(['departure' => function ($q) use ($date) {
+        //         $q->whereDate('trek_start_date', '>=', $date[0])
+        //         ->whereDate('trek_end_date', '<', $date[1]);
+        //     }])
+        //     ->whereHas('cook')
+        //     ->get()->groupBy('cook.cook_name')->toArray();
+        
+        // $cook = [];
+        // foreach ($data as $key => $value) {
+        //     $temp = [];
+        //     $temp['name'] = $key;
+        //     $sumOfDepartures = 0;
+        //     $sumOfDeparturesDays = 0;
+        //     foreach ($value as $valuei) {
+        //         $sumOfDepartures += count($valuei['departure']);
+        //         foreach ($valuei['departure'] as $valueii) {
+        //             $date1 = Carbon::parse($valueii['trek_start_date']);
+        //             $date2 = Carbon::parse($valueii['trek_end_date']);
+        //             $sumOfDeparturesDays += $date1->diffInDays($date2);
+        //         }
+        //     }
+        //     $temp['batches'] = $sumOfDepartures;
+        //     $temp['days'] = $sumOfDeparturesDays;
+        //     $temp['rating'] = 5;
+        //     $cook[] = $temp;
+        // }
+        
+        return $data;
+    }
+
+    public function getLeader($data)
+    {
+        $date = array_map(function ($data) {
+            return new DateTime(($data));
+        }, explode(' - ', $data['date']));
+
+        $data = LeaderRating::select('LeaderID')
+            ->with('leader:leader_name,id')
+            ->whereDate('AddedDate', '>=', $date[0])
+            ->whereDate('AddedDate', '<=', $date[1])
+            ->where('Status', 0)->groupBy('LeaderID')
+            ->selectRaw('sum(NoOfBatch) as batches, sum(NoOfDays) as days, avg(Value) as rating')
+            ->has('leader')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    "name" => ($item->leader? $item->leader->leader_name:null),
+                    "days" => $item->days,
+                    "batches" => $item->batches,
+                    "rating" => $item->rating + 0,
+                ];
+            });
+        // $data = Trek::select(['id','trek_name','trek_leader'])
+        //     ->with('leader')->with(['departure' => function ($q) use ($date) {
+        //         $q->whereDate('trek_start_date', '>=', $date[0])
+        //         ->whereDate('trek_end_date', '<', $date[1]);
+        //     }])
+        //     ->whereHas('leader')
+        //     ->get()->groupBy('leader.leader_name')->toArray();
+        
+        // $leader = [];
+        // foreach ($data as $key => $value) {
+        //     $temp = [];
+        //     $temp['name'] = $key;
+        //     $sumOfDepartures = 0;
+        //     $sumOfDeparturesDays = 0;
+        //     foreach ($value as $valuei) {
+        //         $sumOfDepartures += count($valuei['departure']);
+        //         foreach ($valuei['departure'] as $valueii) {
+        //             $date1 = Carbon::parse($valueii['trek_start_date']);
+        //             $date2 = Carbon::parse($valueii['trek_end_date']);
+        //             $sumOfDeparturesDays += $date1->diffInDays($date2);
+        //         }
+        //     }
+        //     $temp['batches'] = $sumOfDepartures;
+        //     $temp['days'] = $sumOfDeparturesDays;
+        //     $temp['rating'] = 5;
+        //     $leader[] = $temp;
+        // }
+        
+        return $data;
+    }
+
+    public function getSalesteam($data)
+    {
+        $date = array_map(function ($data) {
+            return new DateTime(($data));
+        }, explode(' - ', $data['date']));
+        $pastDate = [
+            (new DateTime($date[0]->format('Y-m-d H:i:s')))->modify('-30 days'),
+            $date[0],
+        ];
+
+        $data = Trek::select(['id','trek_name','trek_assigned_to'])
+            ->with('contact')
+            ->with(['departure' => function ($q) use ($date) {
+                $q->whereDate('trek_start_date', '>=', $date[0])
+                ->whereDate('trek_start_date', '<', $date[1])
+                ->withSum('trekkers', 'Amount');
+            }])
+            ->with(['departure_past' => function ($q) use ($pastDate) {
+                $q->whereDate('trek_start_date', '>=', $pastDate[0])
+                ->whereDate('trek_start_date', '<', $pastDate[1])
+                ->withSum('trekkers', 'Amount');
+            }])
+            ->whereHas('contact')
+            ->get()->groupBy('contact.contact_name')
+            ->map(function ($item, $key) {
+                return $item->map(function ($item, $key) {
+                    $dep = $item->departure->reduce(function ($carry, $item) {
+                        return $carry+$item->trekkers_sum_amount;
+                    });
+                    $dep_past = $item->departure_past->reduce(function ($carry, $item) {
+                        return $carry+$item->trekkers_sum_amount;
+                    });
+                    
+                    return collect(["departure" => (float)$dep,"departure_past" => get_percentage_change($dep, $dep_past)]);
+                });
+            });
+        
+        return [$data];
     }
 
     public function getTest()

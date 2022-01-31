@@ -2,6 +2,9 @@ require('admin-lte');
 import "bootstrap";
 require('./bootstrap');
 const Swal = require('sweetalert2');
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 var Toast = Swal.mixin({
     toast: true,
     position: 'top-end',
@@ -11,13 +14,14 @@ var Toast = Swal.mixin({
 $.ajaxSetup({
     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
 });
+let baseUrl = document.getElementById('base-url').value;
 let headers = {
     // "Content-Type": "multipart/form-data",
     "X-Requested-With": "XMLHttpRequest",
     "X-CSRF-Token": $('meta[name="csrf-token"]').attr('content')
 }
-$(function () {
 
+$(function () { 
     /**
      * Init
      */
@@ -99,6 +103,10 @@ $(function () {
         $("#stateTable").DataTable().ajax.reload()
         $("#ageTable").DataTable().ajax.reload()
         $("#revenueTable").DataTable().ajax.reload()
+        $("#tthdataTable").DataTable().ajax.reload()
+        $("#cookTable").DataTable().ajax.reload()
+        $("#leaderTable").DataTable().ajax.reload()
+        $("#salesteamTable").DataTable().ajax.reload()
     });
 
     /**
@@ -110,14 +118,14 @@ $(function () {
         "responsive": true,
         "lengthChange": false,
         "autoWidth": false,
-        "buttons": [
-            { extend: 'copy', className: 'btn btn-secondary ' },
-            { extend: 'csv', className: 'btn btn-secondary ' },
-            { extend: 'excel', className: 'btn btn-secondary ' },
-            { extend: 'pdf', className: 'btn btn-secondary ' },
-            { extend: 'print', className: 'btn btn-secondary ' },
-            { extend: 'colvis', className: 'btn btn-secondary ' }
-        ],
+        // "buttons": [
+        //     { extend: 'copy', className: 'btn btn-secondary ' },
+        //     { extend: 'csv', className: 'btn btn-secondary ' },
+        //     { extend: 'excel', className: 'btn btn-secondary ' },
+        //     { extend: 'pdf', className: 'btn btn-secondary ' },
+        //     { extend: 'print', className: 'btn btn-secondary ' },
+        //     { extend: 'colvis', className: 'btn btn-secondary ' }
+        // ],
         "ajax": {
             "url": "getBookings",
             "dataSrc": "",
@@ -128,6 +136,11 @@ $(function () {
         },
         'fnCreatedRow': function (nRow, aData, iDataIndex) {
             $(nRow).attr('id', 'booking-' + aData.id);
+        },
+        "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var index = iDisplayIndexFull + 1;
+            $("td:first", nRow).html(index);
+            return nRow;
         },
         columnDefs: [{
             "defaultContent": "-",
@@ -162,20 +175,13 @@ $(function () {
             }
         }
         ]
-    }).buttons().container().appendTo('#bookingTable_wrapper .col-md-6:eq(0)');
+    });
+    // .buttons().container().appendTo('#bookingTable_wrapper .col-md-6:eq(0)');
 
     let topTreksTable = $("#topTreksTable").DataTable({
         "responsive": true,
         "lengthChange": false,
         "autoWidth": false,
-        "buttons": [
-            { extend: 'copy', className: 'btn btn-secondary ' },
-            { extend: 'csv', className: 'btn btn-secondary ' },
-            { extend: 'excel', className: 'btn btn-secondary ' },
-            { extend: 'pdf', className: 'btn btn-secondary ' },
-            { extend: 'print', className: 'btn btn-secondary ' },
-            { extend: 'colvis', className: 'btn btn-secondary ' }
-        ],
         "ajax": {
             "url": "getBookings",
             "dataSrc": "",
@@ -186,6 +192,11 @@ $(function () {
         },
         'fnCreatedRow': function (nRow, aData, iDataIndex) {
             $(nRow).attr('id', 'booking-' + aData.id);
+        },
+        "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var index = iDisplayIndexFull + 1;
+            $("td:first", nRow).html(index);
+            return nRow;
         },
         columnDefs: [{
             "defaultContent": "-",
@@ -220,20 +231,12 @@ $(function () {
             }
         }
         ]
-    }).buttons().container().appendTo('#topTreksTable_wrapper .col-md-6:eq(0)');
+    });
 
     let clientsTable = $("#clientsTable").DataTable({
         "responsive": true,
         "lengthChange": false,
         "autoWidth": false,
-        "buttons": [
-            { extend: 'copy', className: 'btn btn-secondary ' },
-            { extend: 'csv', className: 'btn btn-secondary ' },
-            { extend: 'excel', className: 'btn btn-secondary ' },
-            { extend: 'pdf', className: 'btn btn-secondary ' },
-            { extend: 'print', className: 'btn btn-secondary ' },
-            { extend: 'colvis', className: 'btn btn-secondary ' }
-        ],
         "ajax": {
             "url": "getClients",
             "dataSrc": "",
@@ -244,6 +247,11 @@ $(function () {
         },
         'fnCreatedRow': function (nRow, aData, iDataIndex) {
             $(nRow).attr('id', 'booking-' + aData.id);
+        },
+        "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var index = iDisplayIndexFull + 1;
+            $("td:first", nRow).html(index);
+            return nRow;
         },
         columnDefs: [{
             "defaultContent": "-",
@@ -273,20 +281,12 @@ $(function () {
             }
         }
         ]
-    }).buttons().container().appendTo('#clientsTable_wrapper .col-md-6:eq(0)');
+    });
 
     let cityTable = $("#cityTable").DataTable({
         "responsive": true,
         "lengthChange": false,
         "autoWidth": false,
-        "buttons": [
-            { extend: 'copy', className: 'btn btn-secondary ' },
-            { extend: 'csv', className: 'btn btn-secondary ' },
-            { extend: 'excel', className: 'btn btn-secondary ' },
-            { extend: 'pdf', className: 'btn btn-secondary ' },
-            { extend: 'print', className: 'btn btn-secondary ' },
-            { extend: 'colvis', className: 'btn btn-secondary ' }
-        ],
         "ajax": {
             "url": "getCities",
             "dataSrc": "",
@@ -297,6 +297,11 @@ $(function () {
         },
         'fnCreatedRow': function (nRow, aData, iDataIndex) {
             $(nRow).attr('id', 'booking-' + aData.id);
+        },
+        "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var index = iDisplayIndexFull + 1;
+            $("td:first", nRow).html(index);
+            return nRow;
         },
         columnDefs: [{
             "defaultContent": "-",
@@ -325,20 +330,12 @@ $(function () {
             }
         }
         ]
-    }).buttons().container().appendTo('#cityTable_wrapper .col-md-6:eq(0)');
+    });
 
     let stateTable = $("#stateTable").DataTable({
         "responsive": true,
         "lengthChange": false,
         "autoWidth": false,
-        "buttons": [
-            { extend: 'copy', className: 'btn btn-secondary ' },
-            { extend: 'csv', className: 'btn btn-secondary ' },
-            { extend: 'excel', className: 'btn btn-secondary ' },
-            { extend: 'pdf', className: 'btn btn-secondary ' },
-            { extend: 'print', className: 'btn btn-secondary ' },
-            { extend: 'colvis', className: 'btn btn-secondary ' }
-        ],
         "ajax": {
             "url": "getStates",
             "dataSrc": "",
@@ -349,6 +346,11 @@ $(function () {
         },
         'fnCreatedRow': function (nRow, aData, iDataIndex) {
             $(nRow).attr('id', 'booking-' + aData.id);
+        },
+        "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var index = iDisplayIndexFull + 1;
+            $("td:first", nRow).html(index);
+            return nRow;
         },
         columnDefs: [{
             "defaultContent": "-",
@@ -377,20 +379,12 @@ $(function () {
             }
         }
         ]
-    }).buttons().container().appendTo('#stateTable_wrapper .col-md-6:eq(0)');
+    });
 
     let ageTable = $("#ageTable").DataTable({
         "responsive": true,
         "lengthChange": false,
         "autoWidth": false,
-        "buttons": [
-            { extend: 'copy', className: 'btn btn-secondary ' },
-            { extend: 'csv', className: 'btn btn-secondary ' },
-            { extend: 'excel', className: 'btn btn-secondary ' },
-            { extend: 'pdf', className: 'btn btn-secondary ' },
-            { extend: 'print', className: 'btn btn-secondary ' },
-            { extend: 'colvis', className: 'btn btn-secondary ' }
-        ],
         "ajax": {
             "url": "getAges",
             "dataSrc": "",
@@ -401,6 +395,11 @@ $(function () {
         },
         'fnCreatedRow': function (nRow, aData, iDataIndex) {
             $(nRow).attr('id', 'booking-' + aData.id);
+        },
+        "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var index = iDisplayIndexFull + 1;
+            $("td:first", nRow).html(index);
+            return nRow;
         },
         columnDefs: [{
             "defaultContent": "-",
@@ -429,20 +428,12 @@ $(function () {
             }
         }
         ]
-    }).buttons().container().appendTo('#ageTable_wrapper .col-md-6:eq(0)');
+    });
 
     let revenueTable = $("#revenueTable").DataTable({
         "responsive": true,
         "lengthChange": false,
         "autoWidth": false,
-        "buttons": [
-            { extend: 'copy', className: 'btn btn-secondary ' },
-            { extend: 'csv', className: 'btn btn-secondary ' },
-            { extend: 'excel', className: 'btn btn-secondary ' },
-            { extend: 'pdf', className: 'btn btn-secondary ' },
-            { extend: 'print', className: 'btn btn-secondary ' },
-            { extend: 'colvis', className: 'btn btn-secondary ' }
-        ],
         "ajax": {
             "url": "getRevenue",
             "dataSrc": "",
@@ -453,6 +444,11 @@ $(function () {
         },
         'fnCreatedRow': function (nRow, aData, iDataIndex) {
             $(nRow).attr('id', 'booking-' + aData.id);
+        },
+        "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var index = iDisplayIndexFull + 1;
+            $("td:first", nRow).html(index);
+            return nRow;
         },
         columnDefs: [{
             "defaultContent": "-",
@@ -489,28 +485,14 @@ $(function () {
             }
         }
         ]
-    }).buttons().container().appendTo('#revenueTable_wrapper .col-md-6:eq(0)');
+    });
 
-    let tthdataTable = $("#tthdataTable").DataTable({
+    let cookTable = $("#cookTable").DataTable({
         "responsive": true,
         "lengthChange": false,
         "autoWidth": false,
-        // "rowGroup": true,
-        // "rowGroup": {
-        //     "dataSrc": function(row) {
-        //       return row.name;
-        //     }
-        //   },
-        "buttons": [
-            { extend: 'copy', className: 'btn btn-secondary ' },
-            { extend: 'csv', className: 'btn btn-secondary ' },
-            { extend: 'excel', className: 'btn btn-secondary ' },
-            { extend: 'pdf', className: 'btn btn-secondary ' },
-            { extend: 'print', className: 'btn btn-secondary ' },
-            { extend: 'colvis', className: 'btn btn-secondary ' }
-        ],
         "ajax": {
-            "url": "getTthdata",
+            "url": "getCooks",
             "dataSrc": "",
             "type" : "POST",
             "data": function ( d ) {
@@ -519,6 +501,11 @@ $(function () {
         },
         'fnCreatedRow': function (nRow, aData, iDataIndex) {
             $(nRow).attr('id', 'booking-' + aData.id);
+        },
+        "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var index = iDisplayIndexFull + 1;
+            $("td:first", nRow).html(index);
+            return nRow;
         },
         columnDefs: [{
             "defaultContent": "-",
@@ -541,97 +528,214 @@ $(function () {
             }
         },
         {
-            "title": "Gender",
+            "title": "Batch",
             "width": "60%",
             "render": function (data, type, content, meta) {
-                return content.gender;
+                return content.batches;
             }
         },
         {
-            "title": "Trek name",
+            "title": "Days",
             "width": "60%",
             "render": function (data, type, content, meta) {
-                return content.trek_name;
+                return content.days;
             }
         },
         {
-            "title": "Trek Date",
+            "title": "Star Rating",
             "width": "60%",
             "render": function (data, type, content, meta) {
-                return content.date;
-            }
-        },
-        {
-            "title": "Trek ID",
-            "width": "60%",
-            "render": function (data, type, content, meta) {
-                return content.trek_id;
-            }
-        },
-        {
-            "title": "Status",
-            "width": "60%",
-            "render": function (data, type, content, meta) {
-                return content.trek_status;
-            }
-        },
-        {
-            "title": "DOB",
-            "width": "60%",
-            "render": function (data, type, content, meta) {
-                return content.dob;
-            }
-        },
-        {
-            "title": "Email",
-            "width": "60%",
-            "render": function (data, type, content, meta) {
-                return content.email;
-            }
-        },
-        {
-            "title": "phone",
-            "width": "60%",
-            "render": function (data, type, content, meta) {
-                return content.phone;
-            }
-        },
-        {
-            "title": "state",
-            "width": "60%",
-            "render": function (data, type, content, meta) {
-                return content.state;
-            }
-        },
-        {
-            "title": "city",
-            "width": "60%",
-            "render": function (data, type, content, meta) {
-                return content.city;
-            }
-        },
-        {
-            "title": "country",
-            "width": "60%",
-            "render": function (data, type, content, meta) {
-                return content.country;
+                return content.rating;
             }
         }
+        ]
+    });
+
+    let leaderTable = $("#leaderTable").DataTable({
+        "responsive": true,
+        "lengthChange": false,
+        "autoWidth": false,
+        "ajax": {
+            "url": "getLeaders",
+            "dataSrc": "",
+            "type" : "POST",
+            "data": function ( d ) {
+               return  $.extend(d, bookingData);
+            }
+        },
+        'fnCreatedRow': function (nRow, aData, iDataIndex) {
+            $(nRow).attr('id', 'booking-' + aData.id);
+        },
+        "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var index = iDisplayIndexFull + 1;
+            $("td:first", nRow).html(index);
+            return nRow;
+        },
+        columnDefs: [{
+            "defaultContent": "-",
+            "targets": "_all"
+          }],
+        "columns": [
+        {
+            "title": "Sl. No.",
+            sortable: false,
+            "width": "10%",
+            "render": function (data, type, row, meta) {
+                return meta.row + 1;
+            }
+        },
+        {
+            "title": "Name",
+            "width": "60%",
+            "render": function (data, type, content, meta) {
+                return content.name;
+            }
+        },
+        {
+            "title": "Batch",
+            "width": "60%",
+            "render": function (data, type, content, meta) {
+                return content.batches;
+            }
+        },
+        {
+            "title": "Days",
+            "width": "60%",
+            "render": function (data, type, content, meta) {
+                return content.days;
+            }
+        },
+        {
+            "title": "Star Rating",
+            "width": "60%",
+            "render": function (data, type, content, meta) {
+                return content.rating;
+            }
+        }
+        ]
+    });
+
+    let salesteamTable = $("#salesteamTable").DataTable({
+        "responsive": true,
+        "lengthChange": false,
+        "autoWidth": false,
+        "ajax": {
+            "url": "getSalesteam",
+            "dataSrc": "",
+            "type" : "POST",
+            "data": function ( d ) {
+               return  $.extend(d, bookingData);
+            }
+        },
+        'fnCreatedRow': function (nRow, aData, iDataIndex) {
+            $(nRow).attr('id', 'booking-' + aData.id);
+        },
+        "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var index = iDisplayIndexFull + 1;
+            $("td:first", nRow).html(index);
+            return nRow;
+        },
+        columnDefs: [{
+            "defaultContent": "-",
+            "targets": "_all"
+          }],
+        "columns": [
+        {
+            "title": "Sl. No.",
+            sortable: false,
+            "width": "10%",
+            "render": function (data, type, row, meta) {
+                return meta.row + 1;
+            }
+        },
+        {
+            "title": "Name",
+            "width": "60%",
+            "render": function (data, type, content, meta) {
+                console.log(content);
+                return Object.keys(content)[0];
+            }
+        },
+        {
+            "title": "No. Trek",
+            "width": "60%",
+            "render": function (data, type, content, meta) {
+                return content[Object.keys(content)[0]].length;
+            }
+        },
+        {
+            "title": "Login Hrs",
+            "width": "60%",
+            "render": function (data, type, content, meta) {
+                return 35;
+            }
+        },
+        {
+            "title": "Revenue",
+            "width": "60%",
+            "render": function (data, type, content, meta) {
+                return content[Object.keys(content)[0]][0].departure;
+            }
+        },
+        {
+            "title": "Convert",
+            "width": "60%",
+            "render": function (data, type, content, meta) {
+                return percentElement(content[Object.keys(content)[0]][0].departure_past);
+            }
+        }
+        ]
+    });
+
+    let tthdataTable = $("#tthdataTable").DataTable({
+        "responsive": false,
+        "lengthChange": false,
+        "autoWidth": false,
+        "dom": 'lBfrtip',
+        "lengthMenu": [ [ 5, 10, 50, -1 ], [ 'Show 5 rows', 'Show 10 rows', 'Show 50 rows', 'Show all rows' ] ],
+        "buttons": [
+            { extend: 'copy', className: 'btn btn-outline-danger ' },
+            { extend: 'csv', className: 'btn btn-outline-danger ' },
+            { extend: 'excel', className: 'btn btn-outline-danger ' },
+            { extend: 'pdfHtml5', orientation: 'landscape', pageSize: 'A4',  className: 'btn btn-outline-danger ' },
+            { extend: 'pageLength', className: 'btn btn-outline-danger ' }
         ],
-    }).buttons().container().appendTo('#tthdataTable_wrapper .col-md-6:eq(0)');
-    
+        "rowsGroup": [1, 2, 7, 8 , 9, 10, 11, 12 ],
+        "order": [[ 0, "desc" ]],
+        "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var index = iDisplayIndexFull + 1;
+            $("td:first", nRow).html(index);
+            return nRow;
+        },
+        "ordering": true, 
+        // "scrollX": false,
+        "columnDefs": [{
+            orderable: false,
+            targets: "no-sort"
+        }],
+        "ajax": {
+            "url": "getTthdata",
+            "dataSrc": "",
+            "type" : "POST",
+            "data": function ( d ) {
+               return  $.extend(d, bookingData);
+            }
+        },
+        "fnCreatedRow": function (nRow, aData, iDataIndex) {
+            $(nRow).attr('id', 'booking-' + aData.id);
+        },
+        "columnDefs": [{
+            "defaultContent": "-",
+            "targets": "_all"
+          }]
+    }).buttons().container().appendTo('#bookingTable_wrapper .col-md-6:eq(0)');
+
+
+
     let usersTable = $("#usersTable").DataTable({
         "responsive": true,
         "lengthChange": false,
         "autoWidth": false,
-        "buttons": [
-            { extend: 'copy', className: 'btn btn-secondary ' },
-            { extend: 'csv', className: 'btn btn-secondary ' },
-            { extend: 'excel', className: 'btn btn-secondary ' },
-            { extend: 'pdf', className: 'btn btn-secondary ' },
-            { extend: 'print', className: 'btn btn-secondary ' },
-            { extend: 'colvis', className: 'btn btn-secondary ' }
-        ],
         "ajax": {
             "url": "getUsers",
             "dataSrc": "",
@@ -647,7 +751,7 @@ $(function () {
         "columns": [
         {
             "title": "Sl. No.",
-            sortable: false,
+            "sortable": false,
             "width": "10%",
             "render": function (data, type, row, meta) {
                 return meta.row + 1;
@@ -673,15 +777,17 @@ $(function () {
         },
         {
             "title": "Operations",
+            "sortable": false,
+            "width": "160px",
             "render": function (data, type, content, meta) {
                 return userOperations(content.id);
             }
         }
         ]
-    }).buttons().container().appendTo('#ageTable_wrapper .col-md-6:eq(0)');
+    });
 
     async function addRolesToSelect2(id) {
-        await fetch('/getRoles').then(data => data.json())
+        await fetch(baseUrl+'/getRoles').then(data => data.json())
         .then(data => {
             var d = data.map(val => Object.keys(val)[0])
             var newOption = '';
@@ -695,7 +801,7 @@ $(function () {
 
     window.editUser = (id) => {
         document.querySelector('#modal-edit form').reset()
-        fetch('/editUsers?id='+id).then(data => data.json())
+        fetch(baseUrl+'/editUsers?id='+id).then(data => data.json())
         .then(data => {
             document.querySelector('input#edit-name').value = data[0].name;
             document.querySelector('input#edit-userid').value = data[0].id;
@@ -719,7 +825,7 @@ $(function () {
         let form = e.currentTarget
         showLoading(form);
         console.log(...formData);
-        fetch('/updateUser', {
+        fetch(baseUrl+'/updateUser', {
             method: 'POST',
             headers: headers,
             body: formData,
@@ -756,7 +862,7 @@ $(function () {
         let formData = new FormData(e.currentTarget)
         let form = e.currentTarget
         showLoading(form);
-        fetch('/createUser', {
+        fetch(baseUrl+'/createUser', {
             method: 'POST',
             headers: headers,
             body: formData,
@@ -788,7 +894,7 @@ $(function () {
           confirmButtonText: 'Delete',
         }).then((result) => {
           if (result.isConfirmed) {
-            fetch('/deleteUser/'+id, {
+            fetch(baseUrl+'/deleteUser/'+id, {
                 method: 'DELETE',
                 headers: headers
             }).then(response => response.json())
@@ -804,14 +910,6 @@ $(function () {
         "responsive": true,
         "lengthChange": false,
         "autoWidth": false,
-        "buttons": [
-            { extend: 'copy', className: 'btn btn-secondary ' },
-            { extend: 'csv', className: 'btn btn-secondary ' },
-            { extend: 'excel', className: 'btn btn-secondary ' },
-            { extend: 'pdf', className: 'btn btn-secondary ' },
-            { extend: 'print', className: 'btn btn-secondary ' },
-            { extend: 'colvis', className: 'btn btn-secondary ' }
-        ],
         "ajax": {
             "url": "getRoles",
             "dataSrc": "",
@@ -835,6 +933,7 @@ $(function () {
         },
         {
             "title": "Name",
+            "width": "20%",
             "render": function (data, type, content, meta) {
                 return Object.keys(content)[0];
             }
@@ -847,15 +946,17 @@ $(function () {
         },
         {
             "title": "Operations",
+            "sortable": false,
+            "width": "160px",
             "render": function (data, type, content, meta) {
                 return roleOperations(Object.keys(content));
             }
         }
         ]
-    }).buttons().container().appendTo('#ageTable_wrapper .col-md-6:eq(0)');
+    });
 
     async function addPermissionsToSelect2(id) {
-        await fetch('/getPermissions').then(data => data.json())
+        await fetch(baseUrl+'/getPermissions').then(data => data.json())
         .then(data => {
             var newOption = '';
             $(id).empty().trigger('change');
@@ -868,7 +969,7 @@ $(function () {
 
     window.editRole = (id) => {
         document.querySelector('#modal-edit form').reset()
-        fetch('/editRole?id='+id).then(data => data.json())
+        fetch(baseUrl+'/editRole?id='+id).then(data => data.json())
         .then(data => {
             console.log();
             document.querySelector('input#edit-id').value = id;
@@ -885,7 +986,7 @@ $(function () {
         let formData = new FormData(e.currentTarget)
         let form = e.currentTarget
         showLoading(form);
-        fetch('/updateRole', {
+        fetch(baseUrl+'/updateRole', {
             method: 'POST',
             headers: headers,
             body: formData,
@@ -922,7 +1023,7 @@ $(function () {
         let formData = new FormData(e.currentTarget)
         let form = e.currentTarget
         showLoading(form);
-        fetch('/createRole', {
+        fetch(baseUrl+'/createRole', {
             method: 'POST',
             headers: headers,
             body: formData,
@@ -954,7 +1055,7 @@ $(function () {
           confirmButtonText: 'Delete',
         }).then((result) => {
           if (result.isConfirmed) {
-            fetch('/deleteRole/'+id, {
+            fetch(baseUrl+'/deleteRole/'+id, {
                 method: 'DELETE',
                 headers: headers
             }).then(response => response.json())

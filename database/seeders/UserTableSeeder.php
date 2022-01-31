@@ -28,8 +28,15 @@ class UserTableSeeder extends Seeder
         // }
         $users[] = [
             'Name'          => 'Admin',
-            'email'         => 'admin@tth.com',
-            'password'      => Hash::make('admin@123#'),
+            'email'         => 'admin@trekthehimalayas.com',
+            'password'      => Hash::make('Admin@123'),
+            'created_at'    => Carbon::now(),
+            'updated_at'    => Carbon::now(),
+        ];
+        $users[] = [
+            'Name'          => 'Tester',
+            'email'         => 'a@a.a',
+            'password'      => Hash::make('111'),
             'created_at'    => Carbon::now(),
             'updated_at'    => Carbon::now(),
         ];

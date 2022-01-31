@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/v/dt/dt-1.10.12/datatables.min.css">
+</head>
+<body>
+    <table id="example" class="display" cellspacing="0" width="100%">
+        <thead>
+            <td>a</td>
+            <td>b</td>
+            <td>c</td>
+            <td>d</td>
+            <td>e</td>
+            <td>e</td>
+            <td>e</td>
+            <td>e</td>
+            <td>e</td>
+            <td>e</td>
+            <td>e</td>
+            <td>e</td>
+        </thead>
+     </table>
+</body>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script>
+    var json = `[["Akshay Test","Male","02\/05\/2003","akshay@gmail.com","1597532580","KL","TVM","IN","Test Trek",52,"Completed","2022-01-01"],["Akshay Test","Male","02\/05\/2003","akshay@gmail.com","1597532580","KL","TVM","IN","Test Trek",52,"Completed","2022-01-01"],["Akshay Test","Male","02\/05\/2003","akshay@gmail.com","1597532580","KL","TVM","IN","Test Trek",52,"Completed","2022-01-01"],["Alan Claruz","Male",null,"busdev@ecesistech.com","8943738846",null,null,null,"Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-11-26"],["Amal Babu","Male",null,"amal.babu@bestaibot.in","9746762920",null,null,null,"Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-11-26","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-12-11"],["Anoop A","Male","2021-11-04","anoop@gmail.com","+91 90988989","undefined","TVM","IN","Test Trek",52,"Completed","2022-01-01","Test Trek",52,"Completed","2022-01-06"],["Anu Test","Male","02\/07\/2003","anu@gmail.com","8943738846","KL","TVM","IN","Test Trek",52,"Completed","2022-01-01"],["Anu Vivin","Male","12\/05\/1989","anu.v@ecesistech.com","8807266099","AP","Smithtown","IN","Chadar Trek Frozen River",4,"Completed","2022-01-17"],["Arun Sankar","Male","04\/17\/1985","busdev123@ecesistech.com","+91 8943738846","undefined","Trivandrum","IN","Test Trek",52,"Completed","2022-01-01","Test Trek",52,"Completed","2022-01-06","Test Trek",52,"Completed","2021-12-20","Chadar Trek Frozen River",4,"Completed","2022-01-17","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2022-01-06"],["Jithu Paul","Male","2021-10-04","jithupaul@gmail.com","9074940654","Kerala","Thopramkudy","India","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-11-26","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-12-11"],["Jithu paul","Male",null,"jithu.paul@bestaibot.in","35535353535",null,null,null,"Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-11-26","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-12-11","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-12-16","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-12-13","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-12-15","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-12-18","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2022-01-11","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2022-01-06","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2022-01-14","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2022-01-17","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2022-01-08","Winter Kuari Pass Trek",47,"Completed","2021-12-29"],["Kanchan Pant","Female","2017-11-14","itskanchanpandey@gmail.com","9412991510","UT","Rishikesh","IN","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-12-11","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-11-26"],["KV Test","Male","03\/31\/2021","kv@ecesistech.com","1234567890","KL","TVM","IN","Test Trek",52,"Completed","2022-01-01"],["price wr","Male",null,"prince@gmail.com","35635653",null,null,null,"Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-11-26"],["Rohan Rishi","Male","1986-12-15","rohanrishi80@gmail.com","+91 9456362345","undefined","Rishikesh","IN","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-12-11","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-11-26","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-12-13"],["Sandeep TTH","Male","06\/15\/1985","sandeep@trekthehimalayas.com","9456596969","DL","delhi","IN","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-12-11","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-11-26","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-12-13"],["sandeep Rawat","Male",null,"rawatgemini@gmail.com","9456596969",null,null,null,"Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-12-11","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-11-26","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-12-16","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-12-16","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2022-01-08","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-12-13","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2022-01-06","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-12-15","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-12-18","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-12-18"],["Sebastin Francis","Male","1964-08-23","sbfrancis2000@gmail.com","09945400800","undefined","Bangalore","IN","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-12-11","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-12-11","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-11-26","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-12-16","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-12-16","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2022-01-08","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-12-13","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-12-15","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-12-18","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-12-18"],["Sreejith Dummy","Male","12\/06\/2007","sreejith@gmail.com","1234567890","KL","TVM","IN","Test Trek",52,"Completed","2022-01-06"],["test usr","Male","2021-11-01","testuser@gmail.coms","67866876","AN","tvm","IN","Chopta Chandrashila Tungnath Trek with Deorital",2,"Completed","2021-12-11"]]`
+    console.log(JSON.parse(json));
+    $(document).ready(function(){
+        var table = $('#example').DataTable({
+            'data': JSON.parse(json),
+            'rowsGroup': [0],
+
+        'fnCreatedRow': function (nRow, aData, iDataIndex) {
+            $(nRow).attr('id', 'booking-' + aData.id);
+        },
+        columnDefs: [{
+            "defaultContent": "-",
+            "targets": "_all"
+          }]
+        });
+    });
+</script>
+<script src="https://cdn.datatables.net/v/dt/dt-1.10.12/datatables.min.js" defer></script>
+<script src="https://cdn.rawgit.com/ashl1/datatables-rowsgroup/fbd569b8768155c7a9a62568e66a64115887d7d0/dataTables.rowsGroup.js" defer></script>
+
+</html>
+

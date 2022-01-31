@@ -104,32 +104,39 @@
                     </div>
                 </div>
                 @endcan
-                @can('view revenue')
                 <div class="col-12 col-lg-6">
                     <div class="card">
                         <div class="card-header">
-                            <h4>Revenue</h4> <!-- .card-title -->
+                            <h4>Sales Team Report</h4> <!-- .card-title -->
                         </div>
                         <div class="card-body">
-                            <table id="revenueTable" class="table table-bordered table-striped">
+                            <table id="salesteamTable" class="table table-bordered table-striped">
                             </table>
                         </div>
                     </div>
                 </div>
-                @endcan
-                @can('view tth data')
-                <div class="col-12 col-lg-12">
+                <div class="col-12 col-lg-6">
                     <div class="card">
                         <div class="card-header">
-                            <h4>TTH Data</h4> <!-- .card-title -->
+                            <h4>Cooks Rank</h4> <!-- .card-title -->
                         </div>
                         <div class="card-body">
-                            <table id="tthdataTable" class="table table-bordered table-striped">
+                            <table id="cookTable" class="table table-bordered table-striped">
                             </table>
                         </div>
                     </div>
                 </div>
-                @endcan
+                <div class="col-12 col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Trek Leaders Rank</h4> <!-- .card-title -->
+                        </div>
+                        <div class="card-body">
+                            <table id="leaderTable" class="table table-bordered table-striped">
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

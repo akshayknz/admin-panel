@@ -49,7 +49,7 @@
                             <div class="form-group">
                                 <label for="edit-name">Name</label>
                                 <input autocomplete="new-password" type="text" class="form-control" id="edit-name"
-                                    name="name" placeholder="Enter email">
+                                    name="name" placeholder="Enter name">
                                 <span id="edit-name-error" class="error invalid-feedback"></span>
                             </div>
                             <div class="form-group">
@@ -63,7 +63,10 @@
                                     id="change-password" name="change-password" onChange="changePassword(event);">
                                 <label for="change-password" class="custom-control-label">Change password</label>
                             </div>
-                            <div class="form-group" id="change-password-block" style="display:none;">
+                            <div class="form-group" id="change-password-block" 
+                                style="display:none;margin-left: 6px;
+                                    border-left: 4px solid rgba(0, 0, 0, 0.2);
+                                    padding-left: 20px;">
                             <div class="form-group">
                                 <label for="edit-password">Password</label>
                                 <input autocomplete="new-password" type="password" class="form-control"
@@ -119,7 +122,7 @@
                             <div class="form-group">
                                 <label for="add-name">Name</label>
                                 <input autocomplete="new-password" type="text" class="form-control" id="add-name"
-                                    name="name" placeholder="Enter email">
+                                    name="name" placeholder="Enter name">
                                 <span id="add-name-error" class="error invalid-feedback"></span>
                             </div>
                             <div class="form-group">

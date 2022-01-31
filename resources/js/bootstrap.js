@@ -1,23 +1,23 @@
-window._ = require('lodash');
+// window._ = require('lodash');
 import "bootstrap";
 require("admin-lte/plugins/jquery/jquery");
-require("admin-lte/node_modules/bootstrap/js/src/dropdown.js");
+// require("admin-lte/node_modules/bootstrap/js/src/dropdown.js");
 require("admin-lte/plugins/bootstrap/js/bootstrap.bundle.min.js");
 require("admin-lte/plugins/sweetalert2/sweetalert2.min.js");
 require("admin-lte/plugins/select2/js/select2.full.min.js");
-require("admin-lte/plugins/toastr/toastr.min.js");
+// require("admin-lte/plugins/toastr/toastr.min.js");
 require("admin-lte/plugins/datatables/jquery.dataTables");
-require("admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js");
+// require("admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js");
 require("admin-lte/plugins/datatables-responsive/js/dataTables.responsive.min.js");
 require("admin-lte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js");
 require("admin-lte/plugins/datatables-buttons/js/dataTables.buttons.min.js");
 require("admin-lte/plugins/datatables-buttons/js/buttons.bootstrap4.min.js");
-require("admin-lte/plugins/jszip/jszip.min.js");
+// require("admin-lte/plugins/jszip/jszip.min.js");
 require("admin-lte/plugins/pdfmake/pdfmake.min.js");
 require("admin-lte/plugins/pdfmake/vfs_fonts.js");
 require("admin-lte/plugins/datatables-buttons/js/buttons.html5.min.js");
 require("admin-lte/plugins/datatables-buttons/js/buttons.print.min.js");
-require("admin-lte/plugins/datatables-buttons/js/buttons.colVis.min.js");
+// require("admin-lte/plugins/datatables-buttons/js/buttons.colVis.min.js");
 require("admin-lte/plugins/daterangepicker/daterangepicker");
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -30,6 +30,7 @@ try {
     window.$ = window.jQuery = require('jquery');
 
     require('bootstrap');
+    // require("../js/jquery.rowspanizer.js");
 } catch (e) {
 }
 

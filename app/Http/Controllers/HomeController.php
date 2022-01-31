@@ -70,6 +70,24 @@ class HomeController extends Controller
         return $data;
     }
 
+    public function cook(Request $request){
+        $data = $this->homeService->getCook($request->all());
+
+        return $data;
+    }
+
+    public function leader(Request $request){
+        $data = $this->homeService->getLeader($request->all());
+
+        return $data;
+    }
+
+    public function salesteam(Request $request){
+        $data = $this->homeService->getSalesteam($request->all());
+
+        return $data;
+    }
+
     public function test(Request $request){
         $data = $this->homeService->getTest($request->all());
 
@@ -83,4 +101,8 @@ class HomeController extends Controller
  *   ],
  * 
  * change revenue from booking to trekkers list
+ * 
+ * amount type float
+ * PaymentId type float
+ * 
  */

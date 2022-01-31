@@ -56,10 +56,10 @@
                                 <span id="edit-name-error" class="error invalid-feedback"></span>
                             </div>
                             <div class="form-group">
-                                <label for="edit-password">Role</label>
+                                <label for="edit-password">Permissions</label>
                                 <div class="w-100 select2-wrap">
                                     <select class="select2 form-control" id="edit-role" name="permissions[]"
-                                        data-placeholder="Select a role"
+                                        data-placeholder="Select permissions"
                                         multiple="multiple">
                                     </select>
                                 </div>
@@ -102,11 +102,11 @@
                                 <span id="add-name-error" class="error invalid-feedback"></span>
                             </div>
                             <div class="form-group">
-                                <label for="add-password">Role</label>
+                                <label for="add-password">Permissions</label>
                                 <div class="w-100 select2-wrap">
                                     <select class="select2 form-control" id="add-role" 
                                         name="permissions[]"
-                                        data-placeholder="Select a role"
+                                        data-placeholder="Select permissions"
                                         multiple="multiple">
                                     </select>
                                 </div>

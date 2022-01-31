@@ -5,6 +5,22 @@
         <p>Dashboard</p>
     </a>
 </li>
+@can('view revenue')
+<li class="nav-item">
+    <a href="{{ route('revenue') }}" class="nav-link @if(Route::is('revenue')) active @endif">
+        <i class="nav-icon fas fa-rupee-sign"></i>
+        <p>Revenue</p>
+    </a>
+</li>
+@endcan
+@can('view tth data')
+<li class="nav-item">
+    <a href="{{ route('TTHData') }}" class="nav-link @if(Route::is('TTHData')) active @endif">
+        <i class="nav-icon fas fa-table"></i>
+        <p>TTH Data</p>
+    </a>
+</li>
+@endcan
 @if(auth()->user()->can('user management') || auth()->user()->can('role management'))
 <li class="nav-item @if(Route::is('users') || Route::is('roles')) active menu-open @endif">
     <a href="#" class="nav-link @if(Route::is('users') || Route::is('roles')) active @endif">
