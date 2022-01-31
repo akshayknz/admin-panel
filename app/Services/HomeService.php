@@ -532,27 +532,10 @@ class HomeService
 
     public function getCook($data)
     {
-        // $data=["date"=>"01/01/2022 - 01/31/2022"];
         $date = array_map(function ($data) {
             return new DateTime(($data));
         }, explode(' - ', $data['date']));
 
-        $data = CookRating::select('CookID')
-            ->with('cook:cook_name,id')
-            ->whereDate('AddedDate', '>=', $date[0])
-            ->whereDate('AddedDate', '<=', $date[1])
-            ->where('Status', 0)->groupBy('CookID')
-            ->selectRaw('sum(NoOfBatch) as batches, sum(NoOfDays) as days, avg(Value) as rating')
-            ->has('cook')
-            ->get()
-            ->map(function ($item) {
-                return [
-                    "name" => ($item->cook? $item->cook->cook_name:null),
-                    "days" => $item->days,
-                    "batches" => $item->batches,
-                    "rating" => $item->rating + 0,
-                ];
-            });
         $data = CookRating::select('ID','TrekID','DepartureID', 'Value','AddedDate','CookID','Status')
             ->where('Status', 0)
             ->with(['departure' => function ($query) use($date){
@@ -585,47 +568,6 @@ class HomeService
                 }
                 return($temp);
             });
-            // ->map(function ($item) {
-            //     $sumOfDeparturesDays = 0;
-            //     if(!empty($item->departure)){
-            //         $date1 = Carbon::parse($item->departure->trek_start_date);
-            //         $date2 = Carbon::parse($item->departure->trek_end_date);
-            //         $sumOfDeparturesDays += $date1->diffInDays($date2);
-            //     }
-            //     return [
-            //         "name" => ($item->cook? $item->cook->cook_name:null),
-            //         "days" => $sumOfDeparturesDays,
-            //         "batches" => $item->batches,
-            //         "rating" => $item->rating + 0,
-            //     ];
-            // })
-        // $data = Trek::select(['id','trek_name','trek_cook'])
-        //     ->with('cook')->with(['departure' => function ($q) use ($date) {
-        //         $q->whereDate('trek_start_date', '>=', $date[0])
-        //         ->whereDate('trek_end_date', '<', $date[1]);
-        //     }])
-        //     ->whereHas('cook')
-        //     ->get()->groupBy('cook.cook_name')->toArray();
-        
-        // $cook = [];
-        // foreach ($data as $key => $value) {
-        //     $temp = [];
-        //     $temp['name'] = $key;
-        //     $sumOfDepartures = 0;
-        //     $sumOfDeparturesDays = 0;
-        //     foreach ($value as $valuei) {
-        //         $sumOfDepartures += count($valuei['departure']);
-        //         foreach ($valuei['departure'] as $valueii) {
-        //             $date1 = Carbon::parse($valueii['trek_start_date']);
-        //             $date2 = Carbon::parse($valueii['trek_end_date']);
-        //             $sumOfDeparturesDays += $date1->diffInDays($date2);
-        //         }
-        //     }
-        //     $temp['batches'] = $sumOfDepartures;
-        //     $temp['days'] = $sumOfDeparturesDays;
-        //     $temp['rating'] = 5;
-        //     $cook[] = $temp;
-        // }
         
         return array_values($data->toArray());
     }
