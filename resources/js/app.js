@@ -517,6 +517,7 @@ $(function () {
             sortable: false,
             "width": "10%",
             "render": function (data, type, row, meta) {
+                console.log(data);
                 return meta.row + 1;
             }
         },
@@ -524,6 +525,7 @@ $(function () {
             "title": "Name",
             "width": "60%",
             "render": function (data, type, content, meta) {
+                console.log(data);
                 return content.name;
             }
         },
@@ -652,7 +654,6 @@ $(function () {
             "title": "Name",
             "width": "60%",
             "render": function (data, type, content, meta) {
-                console.log(content);
                 return Object.keys(content)[0];
             }
         },

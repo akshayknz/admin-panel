@@ -20,7 +20,7 @@ Route::post('/getClients', [App\Http\Controllers\HomeController::class, 'client'
 Route::post('/getCities', [App\Http\Controllers\HomeController::class, 'city']);
 Route::post('/getStates', [App\Http\Controllers\HomeController::class, 'state']);
 Route::post('/getAges', [App\Http\Controllers\HomeController::class, 'age']);
-Route::get('/getCooks', [App\Http\Controllers\HomeController::class, 'cook']);
+Route::post('/getCooks', [App\Http\Controllers\HomeController::class, 'cook']);
 Route::post('/getLeaders', [App\Http\Controllers\HomeController::class, 'leader']);
 Route::post('/getSalesteam', [App\Http\Controllers\HomeController::class, 'salesteam']);
 

@@ -18,7 +18,10 @@ class CookRating extends Model
         return $this->hasOne(Cook::class, 'id', 'CookID');
     }
 
-    
+    public function departure()
+    {
+        return $this->hasOne(Departure::class, 'id', 'DepartureID');
+    }
 
 
 }
