@@ -18,7 +18,10 @@ class LeaderRating extends Model
         return $this->hasOne(Leader::class, 'id', 'LeaderID');
     }
 
-    
+    public function departure()
+    {
+        return $this->hasOne(Departure::class, 'id', 'DepartureID');
+    }
 
 
 }

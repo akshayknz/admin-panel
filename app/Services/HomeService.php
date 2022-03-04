@@ -532,6 +532,7 @@ class HomeService
 
     public function getCook($data)
     {
+        // $data=["date"=>"01/31/2012 - 01/31/2042"];
         $date = array_map(function ($data) {
             return new DateTime(($data));
         }, explode(' - ', $data['date']));
@@ -542,7 +543,13 @@ class HomeService
                 $query->select('id', 'trek_start_date','trek_end_date')
                     ->whereDate('trek_start_date', '>=', $date[0])
                     ->whereDate('trek_start_date', '<=', $date[1]);
-            },'cook'])
+            }])
+            ->whereHas('departure', function ($query) use($date){
+                $query->select('id', 'trek_start_date','trek_end_date')
+                    ->whereDate('trek_start_date', '>=', $date[0])
+                    ->whereDate('trek_start_date', '<=', $date[1]);
+            })
+            ->with('cook')
             ->has('cook')
             ->get()->groupBy('CookID')
             ->map(function ($item) {
@@ -567,9 +574,9 @@ class HomeService
                     $temp['rating'] = 0;
                 }
                 return($temp);
-            });
+            })->toArray();
         
-        return array_values($data->toArray());
+        return array_values($data);
     }
 
     public function getLeader($data)
@@ -578,51 +585,46 @@ class HomeService
             return new DateTime(($data));
         }, explode(' - ', $data['date']));
 
-        $data = LeaderRating::select('LeaderID')
-            ->with('leader:leader_name,id')
-            ->whereDate('AddedDate', '>=', $date[0])
-            ->whereDate('AddedDate', '<=', $date[1])
-            ->where('Status', 0)->groupBy('LeaderID')
-            ->selectRaw('sum(NoOfBatch) as batches, sum(NoOfDays) as days, avg(Value) as rating')
-            ->has('leader')
-            ->get()
-            ->map(function ($item) {
-                return [
-                    "name" => ($item->leader? $item->leader->leader_name:null),
-                    "days" => $item->days,
-                    "batches" => $item->batches,
-                    "rating" => $item->rating + 0,
-                ];
-            });
-        // $data = Trek::select(['id','trek_name','trek_leader'])
-        //     ->with('leader')->with(['departure' => function ($q) use ($date) {
-        //         $q->whereDate('trek_start_date', '>=', $date[0])
-        //         ->whereDate('trek_end_date', '<', $date[1]);
-        //     }])
-        //     ->whereHas('leader')
-        //     ->get()->groupBy('leader.leader_name')->toArray();
+        $data = LeaderRating::select('ID','TrekID','DepartureID', 'Value','AddedDate','LeaderID','Status')
+        ->where('Status', 0)
+        ->with(['departure' => function ($query) use($date){
+            $query->select('id', 'trek_start_date','trek_end_date')
+                ->whereDate('trek_start_date', '>=', $date[0])
+                ->whereDate('trek_start_date', '<=', $date[1]);
+        }])
+        ->whereHas('departure', function ($query) use($date){
+            $query->select('id', 'trek_start_date','trek_end_date')
+                ->whereDate('trek_start_date', '>=', $date[0])
+                ->whereDate('trek_start_date', '<=', $date[1]);
+        })
+        ->with('leader')
+        ->has('leader')
+        ->get()->groupBy('LeaderID')
+        ->map(function ($item) {
+            $temp = [];
+            $temp['name'] = ($item[0]->leader)? $item[0]->leader->leader_name: null;
+            $temp['batches'] = count($item);
+            $sumOfDays = 0;
+            $rating = [];
+            foreach ($item as $value) {
+                if($value->departure != null){
+                    $date1 = Carbon::parse($value->departure->trek_start_date);
+                    $date2 = Carbon::parse($value->departure->trek_end_date);
+                    $sumOfDays += $date1->diffInDays($date2);
+                }
+                $rating[] = $value->Value;
+            }
+            $temp['days'] = $sumOfDays;
+            $rating = array_filter($rating);  //remove empty values
+            if(count($rating)) { 
+                $temp['rating'] = array_sum($rating)/count($rating); // sum/count
+            }else{
+                $temp['rating'] = 0;
+            }
+            return($temp);
+        })->toArray();
         
-        // $leader = [];
-        // foreach ($data as $key => $value) {
-        //     $temp = [];
-        //     $temp['name'] = $key;
-        //     $sumOfDepartures = 0;
-        //     $sumOfDeparturesDays = 0;
-        //     foreach ($value as $valuei) {
-        //         $sumOfDepartures += count($valuei['departure']);
-        //         foreach ($valuei['departure'] as $valueii) {
-        //             $date1 = Carbon::parse($valueii['trek_start_date']);
-        //             $date2 = Carbon::parse($valueii['trek_end_date']);
-        //             $sumOfDeparturesDays += $date1->diffInDays($date2);
-        //         }
-        //     }
-        //     $temp['batches'] = $sumOfDepartures;
-        //     $temp['days'] = $sumOfDeparturesDays;
-        //     $temp['rating'] = 5;
-        //     $leader[] = $temp;
-        // }
-        
-        return $data;
+        return array_values($data);
     }
 
     public function getSalesteam($data)

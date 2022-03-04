@@ -517,7 +517,6 @@ $(function () {
             sortable: false,
             "width": "10%",
             "render": function (data, type, row, meta) {
-                console.log(data);
                 return meta.row + 1;
             }
         },
