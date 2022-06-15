@@ -68,6 +68,10 @@
                                     <td class="no-sort">Trek Date</td>
                                     <td class="no-sort">Trek ID</td>
                                     <td class="no-sort">Status</td>
+                                    <td class="no-sort">Total Amount</td>
+                                    <td class="no-sort">Voucher Applied</td>
+                                    <td class="no-sort">Voucher Discount</td>
+                                    <td class="no-sort">Amount Paid</td>
                                     <td class="no-sort">DOB</td>
                                     <td class="no-sort">Email</td>
                                     <td class="no-sort">Phone</td>

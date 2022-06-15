@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Departure;
-use App\Models\Trek;
+use App\Models\CouponUsage;
 
 class Trekker extends Model
 {
@@ -17,6 +17,11 @@ class Trekker extends Model
     public function departure()
     {
         return $this->hasMany(Departure::class, 'id', 'trek_selected_date');
+    }
+
+    public function coupon()
+    {
+        return $this->hasMany(CouponUsage::class, 'trek_coupon_user', 'trekker_token');
     }
 
 

@@ -351,11 +351,13 @@ class HomeService
         $output = Trekuser::select('trek_user_dob as dob')
             ->get()
             ->map(function ($user) use ($ranges) {
-                $age = Carbon::parse($user->dob)->age;
-                foreach ($ranges as $key => $breakpoint) {
-                    if ($breakpoint >= $age) {
-                        $user->range = $key;
-                        break;
+                if(strtotime($user->dob) !=false){
+                    $age = Carbon::parse($user->dob)->age;
+                    foreach ($ranges as $key => $breakpoint) {
+                        if ($breakpoint >= $age) {
+                            $user->range = $key;
+                            break;
+                        }
                     }
                 }
 
@@ -380,11 +382,13 @@ class HomeService
             ->whereDate('trek_user_updated_time', '<', $date[1])
             ->get()
             ->map(function ($user) use ($ranges) {
-                $age = Carbon::parse($user->dob)->age;
-                foreach ($ranges as $key => $breakpoint) {
-                    if ($breakpoint >= $age) {
-                        $user->range = $key;
-                        break;
+                if(strtotime($user->dob) !=false){
+                    $age = Carbon::parse(($user->dob)? $user->dob:0)->age;
+                    foreach ($ranges as $key => $breakpoint) {
+                        if ($breakpoint >= $age) {
+                            $user->range = $key;
+                            break;
+                        }
                     }
                 }
 
@@ -493,9 +497,12 @@ class HomeService
             return new DateTime(($data));
         }, explode(' - ', $data['date']));
 
-        $users = Trekuser::with(['treks.departure' => function ($query) use($date) {
-                $query->whereDate('trek_start_date', '>=', $date[0])
-                ->whereDate('trek_start_date', '<', $date[1]);
+        $users = Trekuser::with(['treks' => function ($query) use($date) {
+                $query->with(['departure' => function ($q) use($date) {
+                    $q->whereDate('trek_start_date', '>=', $date[0])
+                    ->whereDate('trek_start_date', '<', $date[1]);
+                }])
+                ->with('coupon:id,trek_coupon_code,trek_coupon_user,trek_coupon_deducted_amount');
             }])
             ->orderBy('trek_user_first_name', 'asc')
             ->get()->toArray();
@@ -504,11 +511,20 @@ class HomeService
         foreach ($users as $k => $user) {
             if(empty($user['treks'])) $temp = [];
             foreach ($user['treks'] as $ki => $trek) {
-                $trekQuery = Trek::where('id',$trek['trek_selected_trek'])->first()->toArray();
+                $trekQuery = Trek::where('id',$trek['trek_selected_trek'])->first();
                 $temp = [];
                 if(empty($trek['departure'])){
                     $temp = [];
                 }else{
+                    $coupon = [
+                        'deducted_amount' => 0,
+                        'coupons' => []
+                    ];
+                    $coupon = array_reduce($trek['coupon'], function($carry,$value){
+                        $carry['deducted_amount'] += $value['trek_coupon_deducted_amount'];
+                        $carry['coupons'][] = $value['trek_coupon_code'];
+                        return $carry;
+                    }, $coupon);
                     $temp[] = $iter; $iter++;
                     $temp[] = $user['name']; 
                     $temp[] = $user['trek_user_gender']; 
@@ -516,6 +532,10 @@ class HomeService
                     $temp[] = $trek['departure'][0]['trek_start_date']; 
                     $temp[] = $trek['trek_selected_trek']; 
                     $temp[] = (Carbon::now()->startOfDay()->gte($trek['departure'][0]['trek_start_date']))? "Completed":"Upcoming"; 
+                    $temp[] = $trek['Amount']+$coupon['deducted_amount']; 
+                    $temp[] = implode(',',$coupon['coupons']); 
+                    $temp[] = $coupon['deducted_amount']; 
+                    $temp[] = $trek['Amount']; 
                     $temp[] = $user['trek_user_dob']; 
                     $temp[] = $user['trek_user_email']; 
                     $temp[] = $user['trek_user_contact_number']; 
@@ -526,7 +546,7 @@ class HomeService
                 if(!empty($temp)) $data[] = $temp;
             }
         }
-        // dd($data);
+
         return $data;
     }
 

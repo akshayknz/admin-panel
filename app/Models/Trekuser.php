@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Trekker;
+use App\Models\CouponUsage;
 use App\Models\Departure;
 
 class Trekuser extends Model
@@ -18,9 +19,12 @@ class Trekuser extends Model
     {
         $dob = $this->trek_user_dob;
         $diff = 0;
-        if($dob){
+        if($dob && strtotime($dob)!=false){
             $today = date("Y-m-d");
             $diff = date_diff(date_create($dob), date_create($today))->format('%y');
+        }
+        if($diff==null){
+            $diff=0;
         }
 
         return $diff;
