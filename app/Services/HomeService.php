@@ -413,7 +413,7 @@ class HomeService
             ->whereDate('trek_user_updated_time', '<', $pastDate[1])
             ->get()
             ->map(function ($user) use ($ranges) {
-                $age = Carbon::parse($user->dob)->age;
+                $age = Carbon::parse(strtotime($user->dob))->age;
                 foreach ($ranges as $key => $breakpoint) {
                     if ($breakpoint >= $age) {
                         $user->range = $key;
