@@ -471,13 +471,16 @@ class HomeService
 
     public function getRevenue($data)
     {
+        $data['date']="08/08/2022 - 08/09/2022";
+
         $date = array_map(function ($data) {
             return new DateTime(($data));
         }, explode(' - ', $data['date']));
 
         $data = Trek::select('trek_name', 'id')
             ->withCount(['bookings AS paid_sum' => function ($query) use ($date) {
-                $query->select(DB::raw("SUM(Amount) as paidsum"))
+                $query->select(DB::raw("SUM(Amount) as paid_sum"))
+                    ->where('book_activity_status','=','7')
                     ->whereDate('trek_booking_updated_time', '>=', $date[0])
                     ->whereDate('trek_booking_updated_time', '<', $date[1]);
             }])
@@ -486,7 +489,22 @@ class HomeService
                     ->whereDate('trek_booking_updated_time', '>=', $date[0])
                     ->whereDate('trek_booking_updated_time', '<', $date[1]);
             }])
-            ->orderBy('total_participants', 'desc')->get();
+            ->with(['bookings' => function ($query) use ($date) {
+                $query->select('trek_selected_trek_id', 'trek_booking_updated_time','trek_booking_id')
+                // ->withCount(['trekker' => function ($query) {
+                //     $query->select(DB::raw('count(id)'),'id', 'trek_tbooking_id');
+                // }])
+                    ->whereDate('trek_booking_updated_time', '>=', $date[0])
+                    ->whereDate('trek_booking_updated_time', '<', $date[1]);
+            }])
+            ->orderBy('total_participants', 'desc')->get()
+            ->map(function ($item, $key) {
+                $trekkerCount = $item->bookings->reduce(function ($carry, $item){
+                    return $carry+$item->trekkerCount;
+                },0);
+                $item->total_participants = $trekkerCount;
+                return $item;
+            });
         
         return $data;
     }
@@ -513,7 +531,7 @@ class HomeService
             foreach ($user['treks'] as $ki => $trek) {
                 $trekQuery = Trek::where('id',$trek['trek_selected_trek'])->first();
                 $temp = [];
-                if(empty($trek['departure'])){
+                if(empty($trek['departure']) || empty($trekQuery)){
                     $temp = [];
                 }else{
                     $coupon = [
@@ -649,6 +667,7 @@ class HomeService
 
     public function getSalesteam($data)
     {
+
         $date = array_map(function ($data) {
             return new DateTime(($data));
         }, explode(' - ', $data['date']));
@@ -659,6 +678,28 @@ class HomeService
 
         $data = Trek::select(['id','trek_name','trek_assigned_to'])
             ->with('contact')
+            ->withCount([
+                'bookings as bookings_count' => function ($query) use ($date) {
+                    $query->whereDate('trek_booking_updated_time', '>=', $date[0])
+                        ->whereDate('trek_booking_updated_time', '<', $date[1]);
+                }])
+            ->withCount([
+                'bookings as bookings_count_past' => function ($query) use ($pastDate) {
+                    $query->whereDate('trek_booking_updated_time', '>=', $pastDate[0])
+                        ->whereDate('trek_booking_updated_time', '<', $pastDate[1]);
+                }])
+            ->withCount([
+                'bookings as bookings_count_paid' => function ($query) use ($date) {
+                    $query->where('PaymentID', '<>', '')
+                        ->whereDate('trek_booking_updated_time', '>=', $date[0])
+                        ->whereDate('trek_booking_updated_time', '<', $date[1]);
+                }])
+            ->withCount([
+                'bookings as bookings_count_paid_past' => function ($query) use ($pastDate) {
+                    $query->where('PaymentID', '<>', '')
+                        ->whereDate('trek_booking_updated_time', '>=', $pastDate[0])
+                        ->whereDate('trek_booking_updated_time', '<', $pastDate[1]);
+                }])
             ->with(['departure' => function ($q) use ($date) {
                 $q->whereDate('trek_start_date', '>=', $date[0])
                 ->whereDate('trek_start_date', '<', $date[1])
@@ -682,9 +723,17 @@ class HomeService
                     
                     return collect(["departure" => (float)$dep,"departure_past" => get_percentage_change($dep, $dep_past)]);
                 });
-            });
+            })->map(function ($item, $key) {
+                return $item->reduce(function ($carry, $item) use($key) {
+                    return collect([
+                        "name" => $key,
+                        "departure"=>round($carry['departure']+$item['departure'],3),
+                        "departure_past"=>round($carry['departure_past']+$item['departure_past'],3)
+                    ]);
+                },['departure'=>0,'departure_past'=>0]); 
+            })->values()->toArray();
         
-        return [$data];
+        return $data;
     }
 
     public function getTest()

@@ -434,6 +434,7 @@ $(function () {
         "responsive": true,
         "lengthChange": false,
         "autoWidth": false,
+        "order": [[3, 'desc']],
         "ajax": {
             "url": "getRevenue",
             "dataSrc": "",
@@ -653,7 +654,7 @@ $(function () {
             "title": "Name",
             "width": "60%",
             "render": function (data, type, content, meta) {
-                return Object.keys(content)[0];
+                return content.name;
             }
         },
         {
@@ -674,14 +675,15 @@ $(function () {
             "title": "Revenue",
             "width": "60%",
             "render": function (data, type, content, meta) {
-                return content[Object.keys(content)[0]][0].departure;
+                console.log(content);
+                return content.departure;
             }
         },
         {
             "title": "Convert",
             "width": "60%",
             "render": function (data, type, content, meta) {
-                return percentElement(content[Object.keys(content)[0]][0].departure_past);
+                return percentElement(content.departure_past);
             }
         }
         ]
